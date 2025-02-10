@@ -1,0 +1,88 @@
+{% comment %} @SPK@include("partials/mainhead.html") {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% include "../partials/mainhead.html" %}
+<style>
+    .container {
+        margin-top: 30px;
+    }
+</style>
+</head>
+
+<body>
+    {% include "../partials/switcher.html" %}
+    <div class="page">
+        {% include "../partials/header.html" %}
+        {% include "../partials/sidebar.html" %}
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container mt-5">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4>Checkup Report - {{ checkup_report.patient.name }}</h4>
+                        <span class="badge bg-info">{{ checkup_report.get_anc_checkup_number_display }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Checked By:</strong> {{ checkup_report.checked_by.username|default:"N/A" }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Hospital:</strong> {{ checkup_report.hospital.name }}
+                            </div>
+                        </div>
+            
+                        <h5 class="mt-4">🩺 **Vitals & Health Check**</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4"><strong>Blood Pressure:</strong> {{ checkup_report.bp }}</div>
+                            <div class="col-md-4"><strong>RBS:</strong> {{ checkup_report.rbs }} mg/dL</div>
+                            <div class="col-md-4"><strong>Pulse:</strong> {{ checkup_report.pulse }} BPM</div>
+                        </div>
+                        
+                        <h5 class="mt-4">🧬 **Health Conditions**</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">{% if checkup_report.ifa %}✅ IFA Supplemented{% else %}❌ No IFA{% endif %}</div>
+                            <div class="col-md-4">{% if checkup_report.diabetes %}✅ Diabetes{% else %}❌ No Diabetes{% endif %}</div>
+                            <div class="col-md-4">{% if checkup_report.thyroid_disease %}✅ Thyroid Disease{% else %}❌ No Thyroid Issues{% endif %}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">{% if checkup_report.heart_disease %}✅ Heart Disease{% else %}❌ No Heart Disease{% endif %}</div>
+                            <div class="col-md-4">{% if checkup_report.bronchial_asthma %}✅ Bronchial Asthma{% else %}❌ No Asthma{% endif %}</div>
+                            <div class="col-md-4">{% if checkup_report.kidney_disease %}✅ Kidney Disease{% else %}❌ No Kidney Disease{% endif %}</div>
+                        </div>
+                        
+                        <h5 class="mt-4">📝 **Medical History**</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">{% if checkup_report.history_iud %}✅ History of IUD{% else %}❌ No IUD History{% endif %}</div>
+                            <div class="col-md-4">{% if checkup_report.history_stillbirth %}✅ Stillbirth{% else %}❌ No Stillbirth{% endif %}</div>
+                            <div class="col-md-4">{% if checkup_report.history_preclampsia %}✅ Preeclampsia{% else %}❌ No Preeclampsia{% endif %}</div>
+                        </div>
+                        
+                        <h5 class="mt-4">📍 **Placenta Location**</h5>
+                        <p class="fw-bold">{{ checkup_report.placenta_location }}</p>
+            
+                        {% if checkup_report.additional_notes %}
+                        <h5 class="mt-4">🗒️ **Additional Notes**</h5>
+                        <p>{{ checkup_report.additional_notes }}</p>
+                        {% endif %}
+            
+                        <div class="text-muted mt-4">
+                            <small>Report Created: {{ checkup_report.created_at|date:"d M Y, h:i A" }}</small><br>
+                            <small>Last Updated: {{ checkup_report.updated_at|date:"d M Y, h:i A" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+        {% include "../partials/headersearch_modal.html" %}
+        {% include "../partials/footer.html" %}
+    </div>
+    {% include "../partials/commonjs.html" %}
+    {% include "../partials/custom_switcherjs.html" %}
+    <script src="../../../static/assets/js/custom.js"></script>
+    <script src="../../../static/Js/checkup_reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+{% comment %} @SPK@include("partials/mainhead.html") {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% include "../partials/mainhead.html" %}
+<style>
+    .container {
+        margin-top: 30px;
+    }
+</style>
+</head>
+
+<body>
+    {% include "../partials/switcher.html" %}
+    <div class="page">
+        {% include "../partials/header.html" %}
+        {% include "../partials/sidebar.html" %}
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container">
+                <h1 class="mb-4">Create Checkup Report</h1>
+                <div id="phone-input-section">
+                    <label for="phone_number">Enter Phone Number</label>
+                    <input type="text" class="form-control" id="phone_number" placeholder="Enter phone number">
+                    <button type="button" class="btn btn-primary mt-2" id="check-patient-btn">Next</button>
+                    <p id="patient-error" class="text-danger mt-2 d-none">Patient not found.</p>
+                </div>
+                <div id="patient-info" class="d-none mt-4"></div>
+                <div id="selected-anc-info" class="d-none text-center mt-3"></div>
+                <form id="checkup-report-form" class="d-none mt-4 p-4 bg-light shadow-sm rounded">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="anc_checkup_number" class="form-label">ANC Checkup</label>
+                            <select class="form-select form-select-sm" id="anc_checkup_number" name="anc_checkup_number" required>
+                                <option value="">Select</option>
+                                <option value="1">1st ANC</option>
+                                <option value="2">2nd ANC</option>
+                                <option value="3">3rd ANC</option>
+                                <option value="4">4th ANC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="bp" class="form-label">Blood Pressure</label>
+                            <input type="text" class="form-control form-control-sm" id="bp" name="bp" placeholder="e.g., 120/80" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="rbs" class="form-label">Random Blood Sugar</label>
+                            <input type="number" step="0.01" class="form-control form-control-sm" id="rbs" name="rbs" placeholder="e.g., 120.5" required>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="pulse" class="form-label">Pulse Rate</label>
+                            <input type="number" class="form-control form-control-sm" id="pulse" name="pulse" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="placenta_location" class="form-label">Placenta Location</label>
+                            <input type="text" class="form-control form-control-sm" id="placenta_location" name="placenta_location" required>
+                        </div>
+                        
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Medical History</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="diabetes" name="diabetes">
+                                    <label class="form-check-label" for="diabetes">Diabetes</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="thyroid_disease" name="thyroid_disease">
+                                    <label class="form-check-label" for="thyroid_disease">Thyroid Disease</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="heart_disease" name="heart_disease">
+                                    <label class="form-check-label" for="heart_disease">Heart Disease</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="bronchial_asthma" name="bronchial_asthma">
+                                    <label class="form-check-label" for="bronchial_asthma">Bronchial Asthma</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="kidney_disease" name="kidney_disease">
+                                    <label class="form-check-label" for="kidney_disease">Kidney Disease</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="epilepsy" name="epilepsy">
+                                    <label class="form-check-label" for="epilepsy">Epilepsy</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Past Medical History</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="history_iud" name="history_iud">
+                                    <label class="form-check-label" for="history_iud">History of Intrauterine Death</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="history_stillbirth" name="history_stillbirth">
+                                    <label class="form-check-label" for="history_stillbirth">History of Stillbirth</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="history_preclampsia" name="history_preclampsia">
+                                    <label class="form-check-label" for="history_preclampsia">History of Preeclampsia</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="history_eclampsia" name="history_eclampsia">
+                                    <label class="form-check-label" for="history_eclampsia">History of Eclampsia</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="additional_notes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control form-control-sm" id="additional_notes" name="additional_notes" rows="3"></textarea>
+                    </div>
+                
+                    <button type="submit" class="btn btn-primary w-100">Submit Report</button>
+                </form>
+                
+                
+                <div id="response-message" class="mt-4"></div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+        {% include "../partials/headersearch_modal.html" %}
+        {% include "../partials/footer.html" %}
+    </div>
+    {% include "../partials/commonjs.html" %}
+    {% include "../partials/custom_switcherjs.html" %}
+    <script src="../../../static/assets/js/custom.js"></script>
+    <script src="../../../static/Js/checkup_reports.js"></script>
+</body>
+</html>
