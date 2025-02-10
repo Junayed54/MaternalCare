@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -96,7 +97,7 @@ DATABASES = {
         'NAME': 'UpMedical',
         'USER': 'root',
         'PASSWORD': 'Bridgers@123',
-        'HOST': 'your_remote_server_ip_or_domain',  # For local MySQL, use 'localhost'
+        'HOST': '161.97.141.58',  # For local MySQL, use 'localhost'
         'PORT': '3306',  # Default MySQL port
     }
 }
@@ -145,6 +146,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'frontend' / 'static',
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
