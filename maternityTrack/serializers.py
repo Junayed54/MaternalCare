@@ -79,7 +79,7 @@ class PatientSerializer(serializers.ModelSerializer):
             .filter(anc_count__gt=0)  # Ensure it has ANC schedules
             .first()
         )
-        print("Latest Pregnancy Record with ANC Schedules:", pregnancy_record)
+        
 
         if pregnancy_record:
             # Fetch the latest 4 ANC schedules for the selected pregnancy record
@@ -87,7 +87,7 @@ class PatientSerializer(serializers.ModelSerializer):
                 AncSchedule.objects.filter(pregnancy_record=pregnancy_record)
                 .order_by('-created_at')[:4]
             )
-            print("Filtered ANC Schedules:", anc_schedules)
+            
             return AncScheduleSerializer(anc_schedules, many=True).data
         
         return []
@@ -142,7 +142,9 @@ class AncScheduleSerializer(serializers.ModelSerializer):
 class CheckupReportSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)  # Include full patient details in response
     patient_phone = serializers.CharField(write_only=True)  # Accept phone number for lookup
-
+    hospital_name = serializers.CharField(source='hospital.name', read_only=True)  # Derived from hospital
+    checked_by_name = serializers.CharField(source='checked_by.full_name', read_only=True)  # Derived from checked_by (User)
+    anc_checkup_number_display = serializers.CharField(source='get_anc_checkup_number_display', read_only=True)
     class Meta:
         model = CheckupReport
         fields = '__all__'

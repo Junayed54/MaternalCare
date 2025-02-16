@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                         if (schedule.status === "Completed") {
                             statusBadge = "success";
-                            actionButton = `<a href="/show-report/${schedule.id}" class="btn btn-success btn-sm">Show Report</a>`;
+                            actionButton = `<a href="/show_report/${schedule.id}" class="btn btn-success btn-sm">Show Report</a>`;
                         }
                         if (schedule.status === "Missed") {
                             statusBadge = "danger";

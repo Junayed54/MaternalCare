@@ -182,7 +182,7 @@ class CheckupReport(models.Model):
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     checked_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="checkup_reports")
-    anc = models.ForeignKey(AncSchedule, null=True, blank=True, on_delete=models.SET_NULL)  # Keep this if tracking schedules
+    anc = models.OneToOneField(AncSchedule, null=True, blank=True, on_delete=models.SET_NULL)  # Keep this if tracking schedules
     anc_checkup_number = models.PositiveSmallIntegerField(choices=ANC_CHOICES, null=True, blank=True)  # NEW FIELD
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     bp = models.CharField(max_length=20)  # Blood Pressure (e.g., 120/80)
@@ -221,7 +221,8 @@ class DeliveryRecord(models.Model):
         ("Female", "Female"),
     ]
 
-    patient_phone = models.CharField(max_length=15, unique=True, help_text="Phone number of the mother")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
     mother_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Alive", help_text="Mother's status")
     delivery_date = models.DateField(help_text="Date of delivery")
     
@@ -236,3 +237,6 @@ class DeliveryRecord(models.Model):
 
     def __str__(self):
         return f"Delivery Record - {self.patient_phone} (Mother: {self.mother_status}, Baby: {self.baby_status})"
+    
+    
+

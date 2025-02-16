@@ -104,7 +104,7 @@ class GetVillageNameView(APIView):
 class CheckPatientAPIView(APIView):
     def post(self, request):
         phone_number = request.data.get('phone_number', None)
-        print(phone_number)
+        
         if phone_number:
             try:
                 patient = Patient.objects.get(phone_number=phone_number)
@@ -122,7 +122,7 @@ class PatientCreateOrRetrieveAPIView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get("phone_number")
-        print(request.data)
+        
         if not phone_number:
             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -277,7 +277,7 @@ class CreatePatientAndPregnancy(APIView):
             }, status=status.HTTP_201_CREATED)
         
         else:
-            print(pregnancy_serializer.errors)
+            
             return Response(pregnancy_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
  
@@ -300,5 +300,25 @@ class CheckupReportCreateView(generics.CreateAPIView):
                 "checkup_report": serializer.data,
             }, status=status.HTTP_201_CREATED)
 
-        print(serializer.errors)  # Debugging logs
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CheckupReportDetailView(generics.RetrieveAPIView):
+    serializer_class = CheckupReportSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        anc_id= request.data.get("id")  # Get ID from the request body
+        if not anc_id:
+            return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            anc = AncSchedule.objects.get(id=anc_id)
+            report = CheckupReport.objects.get(anc=anc)
+        except CheckupReport.DoesNotExist:
+            return Response({"error": "Checkup report not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(report)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -24,6 +24,9 @@ urlpatterns = [
     path("api/pregnancy/", PregnancyRecordCreateAPIView.as_view(), name="pregnancy-create"),
     path('api/create_patient_and_pregnancy/', CreatePatientAndPregnancy.as_view(), name='create_patient_and_pregnancy'),
     path('api/cre-checkup-report/', CheckupReportCreateView.as_view(), name="create-checkup-report"),
+    
+    
+    path('api/show-report/', CheckupReportDetailView.as_view(), name="show-report"),
 
 ]
 
@@ -34,5 +37,6 @@ urlpatterns += [
     path('report_create/', TemplateView.as_view(template_name='Html/html/custom/checkup_reports.html'), name='checkup_report'),
     path('uhfpo-dashboard/', TemplateView.as_view(template_name='Html/html/custom/uhfpo_dashboard.html'), name='uhfpo_dashboard'),
     path('ch_and_mother/', TemplateView.as_view(template_name='Html/html/custom/childbirth_motherdeath_form.html'), name='child_and_mother'),
-    path('checkup_detail/', TemplateView.as_view(template_name='Html/html/custom/checkup_details.html'), name='chekup_details'),
+    path('show_report/<int:id>/', TemplateView.as_view(template_name='Html/html/custom/checkup_details.html'), name='chekup_details'),
+    path('birth_form/', TemplateView.as_view(template_name='Html/html/custom/birth_form.html'), name='birth_form'),
 ]

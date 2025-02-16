@@ -97,7 +97,7 @@ DATABASES = {
         'NAME': 'UpMedical',
         'USER': 'root',
         'PASSWORD': 'Bridgers@123',
-        'HOST': '161.97.141.58',  # For local MySQL, use 'localhost'
+        'HOST': 'localhost',  # For local MySQL, use 'localhost'
         'PORT': '3306',  # Default MySQL port
     }
 }
