@@ -9,7 +9,7 @@ from rest_framework import generics
 from datetime import timedelta
 from django.shortcuts import get_object_or_404
 
-
+from accounts.permissions import * 
 
 
 class DivisionListView(generics.ListAPIView):
@@ -43,7 +43,7 @@ def get_villages(request, union_id):
 
 
 class GetDivisionNameView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsFieldAssistant | IsMidwife]
 
     def get(self, request, id):
         try:
@@ -54,7 +54,7 @@ class GetDivisionNameView(APIView):
 
 
 class GetDistrictNameView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsFieldAssistant | IsMidwife]
 
     def get(self, request, id):
         try:
@@ -64,7 +64,7 @@ class GetDistrictNameView(APIView):
             return Response({'error': 'District not found'}, status=404)
 
 class GetUpazillaNameView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsFieldAssistant | IsMidwife]
 
     def get(self, request, id):
         try:
@@ -74,7 +74,7 @@ class GetUpazillaNameView(APIView):
             return Response({'error': 'Upazilla not found'}, status=404)
 
 class GetUnionNameView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsFieldAssistant | IsMidwife]
 
     def get(self, request, id):
         try:
@@ -84,7 +84,7 @@ class GetUnionNameView(APIView):
             return Response({'error': 'Union not found'}, status=404)
 
 class GetVillageNameView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsFieldAssistant | IsMidwife]
 
     def get(self, request, id):
         try:
@@ -102,6 +102,7 @@ class GetVillageNameView(APIView):
 
 
 class CheckPatientAPIView(APIView):
+    permission_classes = [IsFieldAssistant | IsMidwife]
     def post(self, request):
         phone_number = request.data.get('phone_number', None)
         
@@ -119,7 +120,7 @@ class CheckPatientAPIView(APIView):
     
     
 class PatientCreateOrRetrieveAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated, IsFieldAssistant | IsMidwife]
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get("phone_number")
         
@@ -157,6 +158,7 @@ class PatientCreateOrRetrieveAPIView(APIView):
 
         
 class PregnancyRecordCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsFieldAssistant | IsMidwife]
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get("phone_number")
 
@@ -179,7 +181,7 @@ class PregnancyRecordCreateAPIView(APIView):
 
 
 class CreatePatientAndPregnancy(APIView):
-    permission_classes = [IsAuthenticated]  # Requires authentication
+    permission_classes = [IsAuthenticated, IsFieldAssistant | IsMidwife]  # Requires authentication
 
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
@@ -284,7 +286,7 @@ class CreatePatientAndPregnancy(APIView):
 class CheckupReportCreateView(generics.CreateAPIView):
     queryset = CheckupReport.objects.all()
     serializer_class = CheckupReportSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsMidwife]
 
     def create(self, request, *args, **kwargs):
         request.data["checked_by"] = request.user.id
@@ -307,7 +309,7 @@ class CheckupReportCreateView(generics.CreateAPIView):
 
 class CheckupReportDetailView(generics.RetrieveAPIView):
     serializer_class = CheckupReportSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsMidwife]
 
     def post(self, request, *args, **kwargs):
         anc_id= request.data.get("id")  # Get ID from the request body
