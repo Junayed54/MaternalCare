@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs.Academy - Skills Assessment Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+            /* Add background image to body */
+            background-image: url("your-background-image.jpg"); /* Replace with your image URL */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Keep background fixed while scrolling */
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        section {
+            padding: 40px 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
+        }
+
+        /* ... (other styles same as before) ... */
+
+        /* Example of different background colors for sections */
+        section:nth-child(even) {
+            background-color: rgba(240, 248, 255, 0.8); /* Light blue background */
+        }
+
+        section:nth-child(odd) {
+            background-color: rgba(250, 235, 215, 0.8); /* Light beige background */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            /* ... (media query styles same as before) ... */
+            body {
+                background-size: auto; /* Adjust background size for smaller screens */
+            }
+        }
+    </style>
+    
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        </nav>
+
+    <div class="container">
+        <div class="quiz-container animate__animated animate__fadeIn">
+            <h1 class="quiz-title">Skills Assessment Quiz</h1>
+            <p class="quiz-description">Welcome to the Jobs.Academy Skills Assessment Quiz! This short quiz will help
+                you identify your strengths and discover suitable career paths. Answer honestly and to the best of
+                your ability. Your results will be kept confidential and used to provide personalized job
+                recommendations.</p>
+            <div class="d-grid gap-2">
+                <button class="btn btn-start" onclick="startQuiz()">Start Quiz</button>
+            </div>
+
+        </div>
+
+        <section class="mt-5 animate__animated animate__fadeInUp">
+            <h2><i class="fas fa-bullseye"></i> Why Take This Quiz?</h2>
+            <p>In today's competitive job market, it's essential to understand your skills and how they align with
+                employer needs. Our skills assessment quiz provides valuable insights into your strengths and
+                areas for development. By taking this quiz, you can:</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Identify your core competencies.</li>
+                <li><i class="fas fa-lightbulb"></i> Discover potential career paths you may not have considered.</li>
+                <li><i class="fas fa-chart-line"></i> Gain a better understanding of your market value.</li>
+                <li><i class="fas fa-user-tie"></i> Receive personalized job recommendations.</li>
+            </ul>
+        </section>
+
+        <section class="mt-5 animate__animated animate__fadeInUp">
+            <h2><i class="fas fa-question-circle"></i> How It Works</h2>
+            <p>The quiz consists of a series of multiple-choice questions designed to assess a range of skills and
+                abilities. There are no right or wrong answers – simply answer honestly based on your own experiences
+                and knowledge. Once you've completed the quiz, you'll receive a detailed report outlining your
+                strengths and potential career matches.</p>
+        </section>
+
+        <section class="mt-5 animate__animated animate__fadeInUp">
+            <h2><i class="fas fa-lock"></i> Our Commitment to Your Privacy</h2>
+            <p>We take your privacy seriously. Your quiz results will be kept strictly confidential and will only be
+                used to provide you with personalized job recommendations. We will never share your data with third
+                parties without your explicit consent.</p>
+        </section>
+
+        <section class="mt-5 animate__animated animate__fadeInUp">
+            <h2><i class="fas fa-info-circle"></i> Frequently Asked Questions</h2>
+            <div class="accordion" id="faqAccordion">
+                </div>
+        </section>
+
+    </div>
+
+    <footer>
+        </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ... (JavaScript code same as before) ...
+    </script>
+
+</body>
+
+</html>

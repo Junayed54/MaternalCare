@@ -27,6 +27,9 @@ urlpatterns = [
     
     
     path('api/show-report/', CheckupReportDetailView.as_view(), name="show-report"),
+    
+    
+    path("api/statistics/", PregnancyDeliveryStatisticsAPIView.as_view(), name="pregnancy_statistics"),
 
 ]
 

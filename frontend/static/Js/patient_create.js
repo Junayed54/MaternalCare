@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
+            let full_name = document.getElementById('full-name');
+            full_name.removeAttribute('disabled');
             
             if (data.exists) {
                 const patient = data.patient;

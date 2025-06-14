@@ -1,1 +1,64 @@
 staticfiles
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django Migrations (ignore all except __init__.py)
+**/migrations/
+!*/migrations/__init__.py
+
+# Environments
+.env
+.env.*
+*.env
+
+# VSCode / IDEs
+.vscode/
+.idea/
+
+# Byte-compiled / cache
+*.db
+*.sqlite3
+*.log
+*.pot
+*.py[cod]
+
+# Media (optional - keep if user-uploaded files shouldn't be versioned)
+media/
+staticfiles/
+
+# OS / Misc
+.DS_Store
+Thumbs.db
+
+# Coverage / Test / Reports
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+*.log
+pytest_cache/
+nosetests.xml
+test-results/
+
+# pipenv / poetry / venv
+venv/
+env/
+ENV/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+
+# Node (if using npm, like for Tailwind or frontend tooling)
+node_modules/
+dist/
+build/
+
+# Compiled front-end
+*.min.css
+*.min.js

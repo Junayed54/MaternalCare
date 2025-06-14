@@ -10,6 +10,8 @@ from datetime import timedelta
 from django.shortcuts import get_object_or_404
 
 from accounts.permissions import * 
+from django.utils.timezone import now
+from django.db.models import Count
 
 
 class DivisionListView(generics.ListAPIView):
@@ -324,3 +326,157 @@ class CheckupReportDetailView(generics.RetrieveAPIView):
 
         serializer = self.get_serializer(report)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    
+    
+# class PregnancyDeliveryStatisticsAPIView(APIView):
+#     def get(self, request, *args, **kwargs):
+#         today = now().date()
+#         first_day_of_current_month = today.replace(day=1)
+#         first_day_of_previous_month = (first_day_of_current_month - timedelta(days=1)).replace(day=1)
+#         last_day_of_previous_month = first_day_of_current_month - timedelta(days=1)
+
+#         # 1️⃣ New pregnant patients created every month
+#         new_pregnant_patients = PregnancyRecord.objects.filter(created_at__month=today.month).count()
+
+#         # 2️⃣ ANC Taken in the Previous Month (1st, 2nd, 3rd, and 4th ANC)
+#         anc_breakdown = AncSchedule.objects.filter(
+#             anc_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).values('status').annotate(count=Count('id'))
+
+#         # 3️⃣ Patients who completed delivery in the previous month
+#         deliveries_last_month = DeliveryRecord.objects.filter(
+#             delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).count()
+
+#         # 4️⃣ Normal vs. Cesarean Deliveries
+#         delivery_type_breakdown = DeliveryRecord.objects.filter(
+#             delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).values('delivery_type').annotate(count=Count('id'))
+
+#         # 5️⃣ Stillbirth vs. Live Birth
+#         birth_status_breakdown = Birth.objects.filter(
+#             birth_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).values('birth_status').annotate(count=Count('id'))
+
+#         # 6️⃣ Number of newborn children in the previous month
+#         newborns_last_month = Birth.objects.filter(
+#             birth_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).count()
+
+#         # 7️⃣ Expected Deliveries in the Next Month
+#         expected_deliveries_next_month = Pregnancy.objects.filter(
+#             expected_delivery_date__month=today.month + 1
+#         ).count()
+
+#         # 8️⃣ Delivery Locations (Home vs. Hospital/Clinic)
+#         delivery_locations = DeliveryRecord.objects.filter(
+#             delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).values('delivery_location').annotate(count=Count('id'))
+
+#         # 9️⃣ Pregnant Patients Before 18 Years
+#         underage_pregnancies = Pregnancy.objects.filter(
+#             patient__date_of_birth__gt=today - timedelta(days=18 * 365)
+#         ).count()
+
+#         # 🔟 Patients who completed D&C (Dilation & Curettage) last month
+#         completed_dsc_last_month = DSCProcedure.objects.filter(
+#             procedure_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+#         ).count()
+
+#         response_data = {
+#             "new_pregnant_patients_this_month": new_pregnant_patients,
+#             "anc_schedule_breakdown_previous_month": list(anc_breakdown),
+#             "deliveries_last_month": deliveries_last_month,
+#             "delivery_type_breakdown": list(delivery_type_breakdown),
+#             "birth_status_breakdown": list(birth_status_breakdown),
+#             "newborns_last_month": newborns_last_month,
+#             "expected_deliveries_next_month": expected_deliveries_next_month,
+#             "delivery_locations": list(delivery_locations),
+#             "underage_pregnancies": underage_pregnancies,
+#             "completed_dsc_last_month": completed_dsc_last_month,
+#         }
+
+#         return Response(response_data)
+
+
+class PregnancyDeliveryStatisticsAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        today = now().date()
+        first_day_of_current_month = today.replace(day=1)
+        first_day_of_previous_month = (first_day_of_current_month - timedelta(days=1)).replace(day=1)
+        last_day_of_previous_month = first_day_of_current_month - timedelta(days=1)
+        next_month = (first_day_of_current_month + timedelta(days=32)).replace(day=1)
+
+        # 1️⃣ New pregnant patients created this month
+        new_pregnant_patients = PregnancyRecord.objects.filter(
+            created_at__month=today.month,
+            created_at__year=today.year
+        ).count()
+
+        # 2️⃣ ANC Breakdown for Previous Month
+        anc_breakdown = AncSchedule.objects.filter(
+            anc_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        ).values('status').annotate(count=Count('id'))
+
+        # 3️⃣ Deliveries Last Month
+        deliveries_last_month = DeliveryRecord.objects.filter(
+            delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        ).count()
+
+        # 4️⃣ Delivery Type Breakdown (Normal vs. C-Section)
+        delivery_type_breakdown = PregnancyRecord.objects.filter(
+            expected_delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        ).values('preferred_delivery_place').annotate(count=Count('id'))
+
+        # 5️⃣ Baby Status Breakdown (Stillbirth vs. Live)
+        birth_status_breakdown = DeliveryRecord.objects.filter(
+            delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        ).values('baby_status').annotate(count=Count('id'))
+
+        # 6️⃣ Total newborns (i.e., count of babies born alive/dead)
+        newborns_last_month = DeliveryRecord.objects.filter(
+            delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        ).count()
+
+        # 7️⃣ Expected Deliveries Next Month
+        expected_deliveries_next_month = PregnancyRecord.objects.filter(
+            expected_delivery_date__month=next_month.month,
+            expected_delivery_date__year=next_month.year
+        ).count()
+
+        # 8️⃣ Delivery Locations (Home, Hospital, Clinic) — based on `preferred_delivery_place`
+        delivery_locations = PregnancyRecord.objects.filter(
+            expected_delivery_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        ).values('preferred_delivery_place').annotate(count=Count('id'))
+
+        # 9️⃣ Pregnant Patients Before 18 Years
+        # ⚠️ Patient model does NOT include `date_of_birth`. You must add it for this to work.
+        underage_pregnancies = 0
+        # If you add date_of_birth to Patient, use the below query:
+        # underage_pregnancies = PregnancyRecord.objects.filter(
+        #     patient__date_of_birth__gt=today - timedelta(days=18*365)
+        # ).count()
+
+        # 🔟 D&C Procedures Last Month
+        completed_dsc_last_month = 0
+        # If DSCProcedure exists:
+        # completed_dsc_last_month = DSCProcedure.objects.filter(
+        #     procedure_date__range=(first_day_of_previous_month, last_day_of_previous_month)
+        # ).count()
+
+        response_data = {
+            "new_pregnant_patients_this_month": new_pregnant_patients,
+            "anc_schedule_breakdown_previous_month": list(anc_breakdown),
+            "deliveries_last_month": deliveries_last_month,
+            "delivery_type_breakdown": list(delivery_type_breakdown),
+            "birth_status_breakdown": list(birth_status_breakdown),
+            "newborns_last_month": newborns_last_month,
+            "expected_deliveries_next_month": expected_deliveries_next_month,
+            "delivery_locations": list(delivery_locations),
+            "underage_pregnancies": underage_pregnancies,
+            "completed_dsc_last_month": completed_dsc_last_month,
+        }
+
+        return Response(response_data)

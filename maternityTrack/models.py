@@ -71,6 +71,7 @@ class Patient(models.Model):
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     image = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True) 
     
     husband_name = models.CharField(max_length=255)
     husband_phone = models.CharField(max_length=20)
