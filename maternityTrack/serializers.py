@@ -55,6 +55,7 @@ class PatientSerializer(serializers.ModelSerializer):
             'couple_no', 'nid_number', 'village', 'union',
             'upazilla', 'district', 'division', 'blood_group',
             'husband_blood_group', 'husband_earning', 'image',
+            'date_of_birth',
             'anc_schedules'  # Include ANC schedule field
         ]
 
@@ -173,3 +174,26 @@ class CheckupReportSerializer(serializers.ModelSerializer):
 
 
 
+class DashboardStatsSerializer(serializers.Serializer):
+    """
+    Serializer for the aggregated dashboard statistics.
+    """
+    pregnant_patients_this_month = serializers.IntegerField()
+    total_deliveries_last_month = serializers.IntegerField()
+    high_risk_pregnancies_count = serializers.IntegerField()
+    total_births_last_month = serializers.IntegerField()
+    expected_births_next_month = serializers.IntegerField()
+
+    delivery_type_last_month = serializers.JSONField() # For nested dictionary
+    birth_outcomes_last_month = serializers.JSONField()
+    delivery_location_last_month = serializers.JSONField()
+
+    monthly_pregnancies_trend = serializers.JSONField()
+    high_risk_pregnancies_by_union = serializers.JSONField()
+    anc_schedule_last_month = serializers.JSONField()
+
+    # You might consider more structured nested serializers for these fields
+    # if they become more complex or need specific validation.
+    # For example:
+    # monthly_pregnancies_trend = MonthlyTrendSerializer()
+    # high_risk_pregnancies_by_union = UnionStatsSerializer()

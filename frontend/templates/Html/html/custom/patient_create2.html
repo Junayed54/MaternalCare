@@ -76,9 +76,14 @@
             <form id="patient-form" class="w-75 mx-auto">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">Phone Number</label>
-                        <input type="text" id="phone-number" class="form-control" required>
-                    </div>
+                    <label class="form-label">Phone Number</label>
+                    <input
+                        type="tel"                            id="phone-number"
+                        class="form-control"
+                        required
+                        pattern="[0-9]{10,15}"                 title="Please enter a valid phone number (digits only, 10-15 characters)"
+                    >
+                </div>
                     <div class="col-md-6">
                         <label class="form-label">Full Name</label>
                         <input type="text" id="full-name" class="form-control" required disabled>
@@ -113,6 +118,10 @@
                             <label class="form-label">National ID Number</label>
                             <input id="nid-number" type="text" class="form-control">
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth</label>
+                            <input id="date-of-birth" type="date" class="form-control">
+                        </div>
                     </div>
 
                     <!-- Address Section -->
@@ -122,9 +131,7 @@
                             <label class="form-label">Division</label>
                             <select id="division" class="form-select">
                                 <option value="">Select Division</option>
-                                {% for division in divisions %}
-                                    <option value="{{ division.id }}">{{ division.name }}</option>
-                                {% endfor %}
+                                
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -204,36 +211,36 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Womb Count</label>
-                            <input id="womb-count" type="number" class="form-control">
+                            <input id="womb-count" type="number" class="form-control" value="0">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">Living Children</label>
-                            <input id="living-children" type="number" class="form-control">
+                            <input id="living-children" type="number" class="form-control" value="0">
                         </div>
                         <div class="col-md-4">
                             <label  class="form-label">Last Child's Age</label>
-                            <input id="last-child-age" type="number" class="form-control">
+                            <input id="last-child-age" type="number" class="form-control" value="0">
                         </div>
                         <div class="col-md-4">
                             <label  class="form-label">Normal Delivery Count</label>
-                            <input id="normal-delivery-count" type="number" class="form-control">
+                            <input id="normal-delivery-count" type="number" class="form-control" value="0">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">C-Section Count</label>
-                            <input id ="c-section-count" type="number" class="form-control">
+                            <input id ="c-section-count" type="number" class="form-control" value="0">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">D&C Count</label>
-                            <input id="d-and-c-count" type="number" class="form-control">
+                            <input id="d-and-c-count" type="number" class="form-control" value="0">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Husband's Monthly Income (Taka)</label>
+                            <label class="form-label">Husband's Income (Monthly)</label>
                             <input id="husband-earning" type="text" class="form-control">
                         </div>
                     </div>

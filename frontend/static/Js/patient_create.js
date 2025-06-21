@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             let full_name = document.getElementById('full-name');
             full_name.removeAttribute('disabled');
             
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     selectElement.innerHTML = `<option value="${value}">${text}</option>`;
                 }
                 
-
+                console.log(document.getElementById("date-of-birth"));
                 // Set other patient details
                 document.getElementById("phone-number").value = patient.phone_number;
                 document.getElementById("full-name").value = patient.full_name;
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("husband-phone").value = patient.husband_phone;
                 document.getElementById("couple-no").value = patient.couple_no;
                 document.getElementById("nid-number").value = patient.nid_number;
-
+                document.getElementById('date-of-birth').value = patient.date_of_birth;
                 document.getElementById("blood-group").value = patient.blood_group;
                 document.getElementById("husband-blood-group").value = patient.husband_blood_group;
                 document.getElementById("husband-earning").value = patient.husband_earning;
@@ -109,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('husband_phone', document.getElementById('husband-phone').value);
         formData.append('couple_no', document.getElementById('couple-no').value);
         formData.append('nid_number', document.getElementById('nid-number').value);
+        formData.append('date_of_birth', document.getElementById('date-of-birth').value);
         formData.append('village', document.getElementById('village').value);
         // formData.append('ward_number', document.getElementById('ward-number').value);
         formData.append('union', document.getElementById('union').value);
@@ -250,130 +252,3 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Function to send a POST request with patient data
-// function createOrRetrievePatient() {
-//     // Get the phone number and other form data (if needed)
-//     const phoneNumber = document.getElementById("phone-number").value;
-//     const fullName = document.getElementById("full-name").value;
-//     const husbandName = document.getElementById("husband-name").value;
-//     const husbandPhone = document.getElementById("husband-phone").value;
-//     const coupleNo = document.getElementById("couple-no").value;
-//     const nidNumber = document.getElementById("nid-number").value;
-//     const village = document.getElementById("village").value;
-//     const wardNumber = document.getElementById("ward-number").value;
-//     const union = document.getElementById("union").value;
-//     const upazilla = document.getElementById("upazilla").value;
-//     const district = document.getElementById("district").value;
-//     const age = document.getElementById("age").value;
-//     const husbandAge = document.getElementById("husband-age").value;
-//     const bloodGroup = document.getElementById("blood-group").value;
-//     const husbandBloodGroup = document.getElementById("husband-blood-group").value;
-//     const husbandEarning = document.getElementById("husband-earning").value;
-
-//     // Check if phone number is provided
-//     if (!phoneNumber) {
-//         alert("Phone number is required.");
-//         return;
-//     }
-
-//     // Construct the request payload
-//     const payload = {
-//         phone_number: phoneNumber,
-//         full_name: fullName,
-//         husband_name: husbandName,
-//         husband_phone: husbandPhone,
-//         couple_no: coupleNo,
-//         nid_number: nidNumber,
-//         village: village,
-//         ward_number: wardNumber,
-//         union: union,
-//         upazilla: upazilla,
-//         district: district,
-//         age: age,
-//         husband_age: husbandAge,
-//         blood_group: bloodGroup,
-//         husband_blood_group: husbandBloodGroup,
-//         husband_earning: husbandEarning,
-//     };
-
-//     // Get the JWT token from localStorage (or sessionStorage) or any method you're using
-//     const token = localStorage.getItem('jwtToken'); // Make sure to save token when user logs in
-
-//     // Make the POST request using fetch
-//     fetch('/api/patient/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${token}`,  // Include the JWT token here
-//         },
-//         body: JSON.stringify(payload)  // Send the payload as JSON
-//     })
-//     .then(response => response.json())  // Parse the JSON response
-//     .then(data => {
-//         if (data.message === "Existing patient retrieved.") {
-//             // Handle existing patient
-//             console.log('Existing patient:', data.data);
-//             alert('Patient found: ' + data.data.full_name);
-
-//             // Hide new patient fields if patient already exists
-//             document.getElementById('new-patient-fields').style.display = 'none';
-//             document.getElementById('existing-patient-fields').style.display = 'block'; // Display existing patient data
-            
-//             // Populate existing patient data fields
-//             document.getElementById("existing-full-name").textContent = data.data.full_name;
-//             document.getElementById("existing-phone-number").textContent = data.data.phone_number;
-//             // Populate other existing patient fields as needed
-
-//         } else {
-//             // Handle new patient creation
-//             console.log('New patient created:', data.data);
-//             alert('New patient created: ' + data.data.full_name);
-
-//             // Show new patient fields
-//             document.getElementById('new-patient-fields').style.display = 'block';
-//             document.getElementById('existing-patient-fields').style.display = 'none';
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         alert('An error occurred while creating or retrieving the patient.');
-//     });
-// }
-
-// // Function to handle the "Next" button
-// function handleNextButton(currentStep, nextStep) {
-//     // Hide the current step
-//     document.getElementById(`step-${currentStep}`).style.display = 'none';
-
-//     // Show the next step
-//     document.getElementById(`step-${nextStep}`).style.display = 'block';
-// }
-
-// // Attach the "Next" button functionality
-// document.getElementById("next_button").addEventListener("click", function (event) {
-//     event.preventDefault();  // Prevent the form from submitting normally
-//     createOrRetrievePatient();  // Call the function to send the data
-    
-//     // Assuming you're using multiple steps in the form
-//     handleNextButton(1, 2);  // Example: Hide step 1 and show step 2
-// });
-
-// // Attach the function to the "Submit" button if needed for the final form submission
-// document.getElementById("submit_button").addEventListener("click", function (event) {
-//     event.preventDefault();  // Prevent the form from submitting normally
-//     createOrRetrievePatient();  // Final submit action
-// });

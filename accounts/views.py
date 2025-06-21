@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from .serializers import *
 # Create your views here.
 class UserLoginView(APIView):
@@ -17,3 +18,14 @@ class UserLoginView(APIView):
         if serializer.errors:
             print (serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserRoleAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "role": user.role,
+            "full_name": user.full_name,
+            "is_superuser": user.is_superuser,
+        }, status=status.HTTP_200_OK)

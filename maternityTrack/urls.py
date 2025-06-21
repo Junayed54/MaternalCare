@@ -30,7 +30,9 @@ urlpatterns = [
     
     
     path("api/statistics/", PregnancyDeliveryStatisticsAPIView.as_view(), name="pregnancy_statistics"),
+    path('api/dashboard-stats/', DashboardStatsAPIView.as_view(), name='dashboard-stats'),
 
+    path('api/dashboard-data/', DjangoDashboardAPIView.as_view(), name='dashboard_data_api'),
 ]
 
 # Template urls

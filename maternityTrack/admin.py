@@ -1,8 +1,6 @@
 from django.contrib import admin
-from .models import (
-    Division, District, Upazilla, Union, Village, PostOffice,
-    Patient, PregnancyRecord, AncSchedule, CheckupReport
-)
+from .models import *
+
 
 @admin.register(Division)
 class DivisionAdmin(admin.ModelAdmin):
@@ -65,3 +63,27 @@ class CheckupReportAdmin(admin.ModelAdmin):
     search_fields = ('patient__full_name', 'checked_by__username')
     list_filter = ('diabetes', 'heart_disease', 'thyroid_disease', 'kidney_disease')
 
+@admin.register(DeliveryRecord)
+class DeliveryRecordAdmin(admin.ModelAdmin):
+    list_display = (
+        'patient', 'created_by', 'delivery_date',
+        'mother_status', 'baby_name', 'baby_gender', 'baby_status',
+        'delivery_type', 'actual_delivery_place'
+    )
+    
+    list_filter = (
+        'mother_status', 'baby_status', 'baby_gender',
+        'delivery_type', 'actual_delivery_place', 'delivery_date'
+    )
+    
+    search_fields = (
+        'patient__name', 'baby_name', 'created_by__username',
+    )
+    
+    readonly_fields = ('created_by',)
+
+    def save_model(self, request, obj, form, change):
+        """ Automatically set the created_by field to the current user """
+        if not obj.created_by:
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)

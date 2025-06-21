@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('api/login/', UserLoginView.as_view(), name="log_in"),
-    
+    path("api/user/role/", UserRoleAPIView.as_view(), name="user-role"),
 ]
 
 

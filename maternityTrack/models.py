@@ -69,15 +69,15 @@ class Patient(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_patients", null=True, blank=True)
 
     full_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, unique=True)
     image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True) 
     
     husband_name = models.CharField(max_length=255)
     husband_phone = models.CharField(max_length=20)
     
-    couple_no = models.CharField(max_length=50, unique=True)
-    nid_number = models.CharField(max_length=50, unique=True)
+    couple_no = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    nid_number = models.CharField(max_length=50, unique=True, null=True, blank=True)
     
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     # ward_number = models.CharField(max_length=10)
@@ -86,12 +86,12 @@ class Patient(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     division = models.ForeignKey(Division, on_delete=models.CASCADE, null=True)
     
-    blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES)
-    husband_blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES)
+    blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES, null=True, blank=True)
+    husband_blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES, null=True, blank=True)
     
-    husband_earning = models.DecimalField(max_digits=10, decimal_places=2, help_text="Husband's earning per month")
+    husband_earning = models.DecimalField(max_digits=10, decimal_places=2, help_text="Husband's earning per month", null=True, blank=True)
 
-    create_at = models.DateField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self):
@@ -182,6 +182,7 @@ class CheckupReport(models.Model):
     ]
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    pregnancy_record = models.ForeignKey(PregnancyRecord, on_delete=models.CASCADE, related_name="checkup_reports", null=True, blank=True)
     checked_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="checkup_reports")
     anc = models.OneToOneField(AncSchedule, null=True, blank=True, on_delete=models.SET_NULL)  # Keep this if tracking schedules
     anc_checkup_number = models.PositiveSmallIntegerField(choices=ANC_CHOICES, null=True, blank=True)  # NEW FIELD
@@ -221,6 +222,23 @@ class DeliveryRecord(models.Model):
         ("Male", "Male"),
         ("Female", "Female"),
     ]
+    
+    
+    DELIVERY_TYPE_CHOICES = [
+        ('Normal', 'Normal'),
+        ('Cesarean', 'Cesarean'),
+        ('Other', 'Other'), # In case of other delivery types
+    ]
+
+    ACTUAL_DELIVERY_PLACE_CHOICES = [
+        ('Hospital', 'Hospital'),
+        ('Clinic', 'Clinic'),
+        ('Home', 'Home'),
+        ('Other', 'Other'), # In case of other places
+    ]
+
+    
+
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
@@ -232,12 +250,24 @@ class DeliveryRecord(models.Model):
     baby_gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     baby_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Alive", help_text="Baby's status")
     
+    delivery_type = models.CharField(
+        max_length=20,
+        choices=DELIVERY_TYPE_CHOICES,
+        null=True, blank=True,
+        help_text="Type of the current delivery"
+    )
+    actual_delivery_place = models.CharField(
+        max_length=20,
+        choices=ACTUAL_DELIVERY_PLACE_CHOICES,
+        null=True, blank=True,
+        help_text="Actual place where the delivery occurred"
+    )
     # Death details (if applicable)
     mother_death_date = models.DateField(null=True, blank=True, help_text="Date of mother's death")
     cause_of_mother_death = models.TextField(null=True, blank=True, help_text="Cause of mother's death")
 
     def __str__(self):
-        return f"Delivery Record - {self.patient_phone} (Mother: {self.mother_status}, Baby: {self.baby_status})"
+        return f"(Mother: {self.mother_status}, Baby: {self.baby_status})"
     
     
 
