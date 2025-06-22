@@ -76,7 +76,7 @@ class Patient(models.Model):
     husband_name = models.CharField(max_length=255)
     husband_phone = models.CharField(max_length=20)
     
-    couple_no = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    couple_no = models.CharField(max_length=50, null=True, blank=True)
     nid_number = models.CharField(max_length=50, unique=True, null=True, blank=True)
     
     village = models.ForeignKey(Village, on_delete=models.CASCADE)

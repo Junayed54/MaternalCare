@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("full-name").value = patient.full_name;
                 document.getElementById("husband-name").value = patient.husband_name;
                 document.getElementById("husband-phone").value = patient.husband_phone;
-                document.getElementById("couple-no").value = patient.couple_no;
+                // document.getElementById("couple-no").value = patient.couple_no;
                 document.getElementById("nid-number").value = patient.nid_number;
                 document.getElementById('date-of-birth').value = patient.date_of_birth;
                 document.getElementById("blood-group").value = patient.blood_group;
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('phone_number', document.getElementById('phone-number').value);
         formData.append('husband_name', document.getElementById('husband-name').value);
         formData.append('husband_phone', document.getElementById('husband-phone').value);
-        formData.append('couple_no', document.getElementById('couple-no').value);
+        // formData.append('couple_no', document.getElementById('couple-no').value);
         formData.append('nid_number', document.getElementById('nid-number').value);
         formData.append('date_of_birth', document.getElementById('date-of-birth').value);
         formData.append('village', document.getElementById('village').value);
