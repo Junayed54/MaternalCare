@@ -305,12 +305,34 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.success ? "Checkup report submitted!" : "Error submitting checkup report.");
-            location.reload();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Checkup report submitted!',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed!',
+                    text: 'Error submitting checkup report.',
+                    confirmButtonColor: '#d33'
+                });
+            }
         })
         .catch(error => {
             console.log("Error submitting checkup report:", error);
-            alert("Error submitting checkup report.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Unexpected Error',
+                text: 'Something went wrong. Please try again.',
+                confirmButtonColor: '#d33'
+            });
         });
+
     });
 });

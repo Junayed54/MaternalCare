@@ -149,12 +149,25 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Form submitted successfully!');
-                form.reset();
-                window.location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Form submitted successfully!',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    form.reset();
+                    window.location.reload();
+                });
             } else {
-                alert('Error submitting form. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Error submitting form. Please try again.',
+                    confirmButtonColor: '#d33'
+                });
             }
+
         })
         .catch(error => {
             console.error('Error:', error);

@@ -31,13 +31,22 @@ document.getElementById("childbirth-form").addEventListener("submit", function(e
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById("response-message").textContent = "✅ Childbirth record added successfully!";
-        document.getElementById("response-message").classList.add("text-green-600");
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Childbirth record added successfully!',
+            confirmButtonColor: '#3085d6'
+        });
     })
     .catch(error => {
-        document.getElementById("response-message").textContent = "❌ Error submitting childbirth record.";
-        document.getElementById("response-message").classList.add("text-red-600");
+        Swal.fire({
+            icon: 'error',
+            title: 'Submission Failed',
+            text: 'Error submitting childbirth record.',
+            confirmButtonColor: '#d33'
+        });
     });
+
 });
 
 // Mother Death Form Submission
@@ -58,11 +67,29 @@ document.getElementById("motherdeath-form").addEventListener("submit", function(
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById("response-message").textContent = "✅ Mother death record added successfully!";
-        document.getElementById("response-message").classList.add("text-green-600");
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Mother record added successfully!',
+            confirmButtonColor: '#3085d6'
+        });
+
+        // Optional inline message
+        const msg = document.getElementById("response-message");
+        msg.textContent = "✅ Mother record added successfully!";
+        msg.className = "text-green-600 font-semibold mt-2";
     })
     .catch(error => {
-        document.getElementById("response-message").textContent = "❌ Error submitting mother death record.";
-        document.getElementById("response-message").classList.add("text-red-600");
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Error submitting mother record.',
+            confirmButtonColor: '#d33'
+        });
+
+        const msg = document.getElementById("response-message");
+        msg.textContent = "❌ Error submitting mother record.";
+        msg.className = "text-red-600 font-semibold mt-2";
     });
+
 });
