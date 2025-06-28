@@ -33,6 +33,8 @@ urlpatterns = [
     path('api/dashboard-stats/', DashboardStatsAPIView.as_view(), name='dashboard-stats'),
 
     path('api/dashboard-data/', DjangoDashboardAPIView.as_view(), name='dashboard_data_api'),
+    
+    path('api/patients/birth-history/', BirthHistoryByPhoneNumberAPIView.as_view(), name='birth-history-by-phone'),
 ]
 
 # Template urls

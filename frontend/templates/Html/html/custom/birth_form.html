@@ -1,10 +1,9 @@
 {% comment %} @SPK@include("partials/mainhead.html") {% endcomment %}
 {% include "../partials/mainhead.html" %}
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 </head>
-<body>
 
+<body>
     {% comment %} @SPK@include("partials/switcher.html") {% endcomment %}
     {% include "../partials/switcher.html" %}
     <div class="page">
@@ -12,24 +11,28 @@
         {% include "../partials/header.html" %}
         {% comment %} @SPK@include("partials/sidebar.html") {% endcomment %}
         {% include "../partials/sidebar.html" %}
+
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container mt-5">
                 <h2 class="text-center">Delivery Record Form</h2>
-                
-                <!-- Patient Check Form -->
+
+                <!-- Patient Search Section -->
                 <div class="mb-4">
                     <label for="patient_phone" class="form-label">Enter Patient Phone Number:</label>
                     <input type="text" id="patient_phone" class="form-control" placeholder="Enter phone number">
                     <button id="checkPatient" class="btn btn-primary mt-2">Check Patient</button>
                     <div id="patientMessage" class="mt-2"></div>
                 </div>
-                
-                <!-- Delivery Record Form (Initially Hidden) -->
+
+                <!-- Previous Deliveries -->
+                <div id="previousDeliveries" class="mb-4" style="display: none;"></div>
+
+                <!-- Delivery Record Form -->
                 <form id="deliveryForm" class="p-4 border rounded shadow-lg bg-light" style="display: none;">
                     <input type="hidden" id="created_by" value="{{ request.user.id }}">
                     <input type="hidden" id="patient_id">
-                    
+
                     <div class="mb-3">
                         <label for="mother_status" class="form-label">Mother's Status</label>
                         <select id="mother_status" class="form-select" required>
@@ -38,17 +41,17 @@
                             <option value="Stillborn">Stillborn</option>
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="delivery_date" class="form-label">Delivery Date</label>
                         <input type="date" id="delivery_date" class="form-control" required>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="baby_name" class="form-label">Baby's Name</label>
                         <input type="text" id="baby_name" class="form-control">
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="baby_gender" class="form-label">Baby's Gender</label>
                         <select id="baby_gender" class="form-select">
@@ -57,7 +60,7 @@
                             <option value="Female">Female</option>
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="baby_status" class="form-label">Baby's Status</label>
                         <select id="baby_status" class="form-select" required>
@@ -66,7 +69,7 @@
                             <option value="Stillborn">Stillborn</option>
                         </select>
                     </div>
-                    
+
                     <div id="deathDetails" style="display: none;">
                         <div class="mb-3">
                             <label for="mother_death_date" class="form-label">Date of Mother's Death</label>
@@ -77,26 +80,79 @@
                             <textarea id="cause_of_mother_death" class="form-control"></textarea>
                         </div>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-success">Submit</button>
                 </form>
             </div>
         </div>
         <!-- End::app-content -->
 
-        {% comment %} @SPK@include("partials/headersearch_modal.html") {% endcomment %}
         {% include "../partials/headersearch_modal.html" %}
-        {% comment %} @SPK@include("partials/footer.html") {% endcomment %}
         {% include "../partials/footer.html" %}
     </div>
 
-    {% comment %} @SPK@include("partials/commonjs.html") {% endcomment %}
     {% include "../partials/commonjs.html" %}
-    {% comment %} @SPK@include("partials/custom_switcherjs.html") {% endcomment %}
     {% include "../partials/custom_switcherjs.html" %}
     <script src="../../../static/assets/js/custom.js"></script>
-    <script src="../../../static/Js/birth_form.js"></script>
 
+    <script>
+        // Toggle death fields based on mother's status
+        document.getElementById("mother_status").addEventListener("change", function () {
+            const deathSection = document.getElementById("deathDetails");
+            if (this.value === "Deceased") {
+                deathSection.style.display = "block";
+            } else {
+                deathSection.style.display = "none";
+            }
+        });
 
+        // Handle patient search
+        document.getElementById("checkPatient").addEventListener("click", function () {
+            const phone = document.getElementById("patient_phone").value.trim();
+            const messageBox = document.getElementById("patientMessage");
+            const deliveryForm = document.getElementById("deliveryForm");
+            const previousDeliveriesBox = document.getElementById("previousDeliveries");
+
+            axios.post("api/birth-history/", {
+                phone_number: phone
+            })
+            .then(function (response) {
+                const data = response.data;
+
+                // Set hidden patient ID
+                document.getElementById("patient_id").value = data.patient_id;
+
+                // Show success message
+                messageBox.innerHTML = `<div class="alert alert-success">
+                    Patient Found: <strong>${data.full_name}</strong> (Village: ${data.village_name}, Union: ${data.union_name}, Division: ${data.division_name})
+                </div>`;
+
+                // Show delivery form
+                deliveryForm.style.display = "block";
+
+                // Show previous deliveries
+                if (data.previous_deliveries && data.previous_deliveries.length > 0) {
+                    let html = "<h5>Previous Deliveries</h5><ul class='list-group'>";
+                    data.previous_deliveries.forEach(rec => {
+                        html += `<li class="list-group-item">
+                            ${rec.delivery_date} - ${rec.baby_name || "N/A"} (${rec.baby_status})
+                        </li>`;
+                    });
+                    html += "</ul>";
+                    previousDeliveriesBox.innerHTML = html;
+                    previousDeliveriesBox.style.display = "block";
+                } else {
+                    previousDeliveriesBox.innerHTML = "";
+                    previousDeliveriesBox.style.display = "none";
+                }
+
+            })
+            .catch(function (error) {
+                messageBox.innerHTML = `<div class="alert alert-danger">No patient found with this phone number.</div>`;
+                deliveryForm.style.display = "none";
+                previousDeliveriesBox.style.display = "none";
+            });
+        });
+    </script>
 </body>
 </html>

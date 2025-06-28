@@ -1,8 +1,5 @@
 from rest_framework import serializers
-from .models import (
-    Division, District, Upazilla, Union, Village, PostOffice, Patient, PregnancyRecord,
-    AncSchedule, CheckupReport
-)
+from .models import *
 from django.db import models
 
 class DivisionSerializer(serializers.ModelSerializer):
@@ -47,7 +44,11 @@ class AncScheduleSerializer(serializers.ModelSerializer):
 
 class PatientSerializer(serializers.ModelSerializer):
     anc_schedules = serializers.SerializerMethodField()
-
+    division_name = serializers.SerializerMethodField()
+    district_name = serializers.SerializerMethodField()
+    upazilla_name = serializers.SerializerMethodField()
+    union_name = serializers.SerializerMethodField()
+    village_name = serializers.SerializerMethodField()
     class Meta:
         model = Patient
         fields = [
@@ -56,7 +57,8 @@ class PatientSerializer(serializers.ModelSerializer):
             'upazilla', 'district', 'division', 'blood_group',
             'husband_blood_group', 'husband_earning', 'image',
             'date_of_birth',
-            'anc_schedules'  # Include ANC schedule field
+            'anc_schedules',  # Include ANC schedule field
+            'division_name', 'district_name', 'upazilla_name', 'union_name', 'village_name'
         ]
 
     # def get_anc_schedules(self, obj):
@@ -69,7 +71,21 @@ class PatientSerializer(serializers.ModelSerializer):
     #         print(anc_schedules)
     #         return AncScheduleSerializer(anc_schedules, many=True).data
     #     return []
-    
+    def get_division_name(self, obj):
+        return obj.division.name if obj.division else None
+
+    def get_district_name(self, obj):
+        return obj.district.name if obj.district else None
+
+    def get_upazilla_name(self, obj):
+        return obj.upazilla.name if obj.upazilla else None
+
+    def get_union_name(self, obj):
+        return obj.union.name if obj.union else None
+
+    def get_village_name(self, obj):
+        return obj.village.name if obj.village else None
+
     
     def get_anc_schedules(self, obj):
         # Fetch all pregnancy records and pick the latest one that has ANC schedules
@@ -197,3 +213,11 @@ class DashboardStatsSerializer(serializers.Serializer):
     # For example:
     # monthly_pregnancies_trend = MonthlyTrendSerializer()
     # high_risk_pregnancies_by_union = UnionStatsSerializer()
+
+
+
+class DeliveryRecordSerializer(serializers.ModelSerializer):
+    patient = PatientSerializer()
+    class Meta:
+        model = DeliveryRecord
+        fields = '__all__'

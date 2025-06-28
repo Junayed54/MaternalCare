@@ -964,3 +964,26 @@ class DjangoDashboardAPIView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+    
+    
+    
+    
+class BirthHistoryByPhoneNumberAPIView(APIView):
+    def post(self, request):
+        phone_number = request.data.get("phone_number")
+
+        if not phone_number:
+            return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            patient = Patient.objects.get(phone_number=phone_number)
+            delivery_records = DeliveryRecord.objects.filter(patient=patient)
+
+            if not delivery_records.exists():
+                return Response({"message": "No birth history found for this patient."}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = DeliveryRecordSerializer(delivery_records, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Patient.DoesNotExist:
+            return Response({"error": "Patient with this phone number does not exist."}, status=status.HTTP_404_NOT_FOUND)

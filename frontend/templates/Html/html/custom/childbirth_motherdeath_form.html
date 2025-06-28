@@ -19,60 +19,106 @@
         {% comment %} @SPK@include("partials/sidebar.html") {% endcomment %}
         {% include "../partials/sidebar.html" %}
         <!-- Start::app-content -->
-        <div class="main-content app-content">
-
-            <div class="container mt-5 p-4 bg-light shadow rounded">
+        <div class="main-content app-content row">
+            <div class="col-md-6">
+            <div class="container my-5 p-4 bg-light shadow rounded">
                 <h2 class="text-center mb-4">Childbirth Form</h2>
                 
+                <!-- Patient phone and search -->
+                <label for="patient_phone" class="form-label">Mother's Phone Number</label>
+                <div class="input-group mb-3">
+                    <input type="text" id="patient_phone" class="form-control" required placeholder="Enter phone number">
+                    <button id="searchPatientBtn" class="btn btn-outline-secondary" type="button">Search Patient</button>
+                </div>
+                <div id="patient-info" class="mb-3 text-success fw-bold"></div>
+                <div id="patient-error" class="mb-3 text-danger fw-bold"></div>
+                
                 <!-- Childbirth Form -->
-                <form id="delivery-form">
+                <form id="delivery-form" style="display:none;">
+                <input type="hidden" id="patient_id">
+
+                <label for="delivery_date" class="form-label">Delivery Date</label>
+                <input type="date" id="delivery_date" class="form-control" required>
+
+                <label for="mother_status" class="form-label">Mother's Status</label>
+                <select id="mother_status" class="form-select" required>
+                    <option value="Alive">Alive</option>
+                    <option value="Deceased">Deceased</option>
+                </select>
+
+                <div id="death-details" style="display: none;">
+                    <label for="mother_death_date" class="form-label">Mother's Death Date</label>
+                    <input type="date" id="mother_death_date" class="form-control">
+
+                    <label for="cause_of_mother_death" class="form-label">Cause of Death</label>
+                    <textarea id="cause_of_mother_death" class="form-control"></textarea>
+                </div>
+
+                <!-- ✅ NEW FIELD: Delivery Type -->
+                <label for="delivery_type" class="form-label">Delivery Type</label>
+                <select id="delivery_type" class="form-select" required>
+                    <option value="">Select Type</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Cesarean">Cesarean</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <!-- ✅ NEW FIELD: Actual Delivery Place -->
+                <label for="actual_delivery_place" class="form-label">Actual Delivery Place</label>
+                <select id="actual_delivery_place" class="form-select" required>
+                    <option value="">Select Place</option>
+                    <option value="Hospital">Hospital</option>
+                    <option value="Clinic">Clinic</option>
+                    <option value="Home">Home</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <h5 class="text-secondary mt-3">Baby Information</h5>
+
+                <label for="baby_name" class="form-label">Baby Name</label>
+                <input type="text" id="baby_name" class="form-control">
+
+                <label for="baby_gender" class="form-label">Baby Gender</label>
+                <select id="baby_gender" class="form-select">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+
+                <label for="baby_status" class="form-label">Baby's Status</label>
+                <select id="baby_status" class="form-select" required>
+                    <option value="Alive">Alive</option>
+                    <option value="Deceased">Deceased</option>
+                    <option value="Stillborn">Stillborn</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
+            </form>
+
                 
-                    <label for="patient_phone" class="form-label">Mother's Phone Number</label>
-                    <input type="text" id="patient_phone" class="form-control" required>
-                
-                    <label for="delivery_date" class="form-label">Delivery Date</label>
-                    <input type="date" id="delivery_date" class="form-control" required>
-                
-                    <label for="mother_status" class="form-label">Mother's Status</label>
-                    <select id="mother_status" class="form-select" required>
-                        <option value="Alive">Alive</option>
-                        <option value="Deceased">Deceased</option>
-                    </select>
-                
-                    <div id="death-details" style="display: none;">
-                        <label for="mother_death_date" class="form-label">Mother's Death Date</label>
-                        <input type="date" id="mother_death_date" class="form-control">
-                
-                        <label for="cause_of_mother_death" class="form-label">Cause of Death</label>
-                        <textarea id="cause_of_mother_death" class="form-control"></textarea>
-                    </div>
-                
-                    <h5 class="text-secondary mt-3">Baby Information</h5>
-                    <label for="baby_name" class="form-label">Baby Name</label>
-                    <input type="text" id="baby_name" class="form-control">
-                
-                    <label for="baby_gender" class="form-label">Baby Gender</label>
-                    <select id="baby_gender" class="form-select">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Others">Others</option>
-                    </select>
-                
-                    <label for="baby_status" class="form-label">Baby's Status</label>
-                    <select id="baby_status" class="form-select" required>
-                        <option value="Alive">Alive</option>
-                        <option value="Stillborn">Stillborn</option>
-                    </select>
-                
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
-                </form>
-                
-        
                 <!-- Response Messages -->
                 <div id="response-message" class="mt-3 text-center fw-bold"></div>
             </div>
-        
+            </div>
+
+            <!-- ✅ Right Side: New Birth History Check -->
+            <div class="col-md-6 py-5">
+                <div class="card p-3 shadow-sm">
+                <h5>Check Childbirth History</h5>
+                <div class="mb-2">
+                    <label for="history_phone" class="form-label">Phone Number</label>
+                    <input type="text" id="history_phone" class="form-control" placeholder="Enter phone number">
+                </div>
+                <button id="checkHistoryBtn" class="btn btn-info mb-2">Check History</button>
+
+                <div id="history_result" class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Search results will be shown here -->
+                </div>
+                </div>
+            </div>
+            
         </div>
+        
         <!-- End::app-content -->
 
         {% comment %} @SPK@include("partials/headersearch_modal.html") {% endcomment %}
@@ -91,6 +137,124 @@
 
     <!-- My js files -->
     <script src="../../../static/Js/checkup_reports.js"></script>
+
+    <script>
+        // Show/hide death details based on mother's status
+        document.getElementById("mother_status").addEventListener("change", function () {
+            document.getElementById("death-details").style.display = this.value === "Deceased" ? "block" : "none";
+        });
+
+        // Search patient by phone
+        document.getElementById("searchPatientBtn").addEventListener("click", function () {
+            const phone = document.getElementById("patient_phone").value.trim();
+            const infoBox = document.getElementById("patient-info");
+            const errorBox = document.getElementById("patient-error");
+            const form = document.getElementById("delivery-form");
+            const patientIdInput = document.getElementById("patient_id");
+
+            infoBox.textContent = "";
+            errorBox.textContent = "";
+            form.style.display = "none";
+            patientIdInput.value = "";
+
+            if (!phone) {
+                errorBox.textContent = "Please enter a phone number.";
+                return;
+            }
+
+            const token = localStorage.getItem('access_token'); // adjust key name if different
+
+            axios.post('/api/check_patient/', 
+                { phone_number: phone },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            .then(response => {
+                const data = response.data.patient;
+                console.log(data);
+                //patientIdInput.value = data.;
+                infoBox.textContent = `Patient Found: ${data.full_name} (${data.village_name}, ${data.union_name}, ${data.division_name})`;
+                form.style.display = "block";
+            })
+            .catch(error => {
+                errorBox.textContent = "Patient not found with this phone number.";
+                console.error(error);
+            });
+
+        });
+
+        // Optionally add form submit logic here
+
+    </script>
+
+    <script>
+    document.getElementById("checkHistoryBtn").addEventListener("click", function () {
+        const phone = document.getElementById("history_phone").value.trim();
+        const container = document.getElementById("history_result");
+        container.innerHTML = "";
+
+        if (!phone) {
+            container.innerHTML = `<span class="text-danger">Please enter a phone number.</span>`;
+            return;
+        }
+
+        const token = localStorage.getItem('access_token');
+
+        axios.post('/api/patients/birth-history/', 
+            { phone_number: phone },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        .then(response => {
+            const histories = response.data;
+            container.innerHTML = ""; // clear previous
+
+            if (!histories || histories.length === 0) {
+                container.innerHTML = "<p class='text-red-600'>No birth history found.</p>";
+                return;
+            }
+
+            histories.forEach(item => {
+                const patient = item.patient || {};
+
+                container.innerHTML += `
+                    <div class="p-4 mb-3 border border-gray-300 rounded bg-white shadow">
+                        <h4 class="font-semibold text-lg text-indigo-600">👶 Baby Info</h4>
+                        <p><strong>Name:</strong> ${item.baby_name} (${item.baby_gender}) - <strong>Status:</strong> ${item.baby_status}</p>
+                        
+                        <h4 class="mt-2 font-semibold text-lg text-green-600">🏥 Delivery</h4>
+                        <p><strong>Type:</strong> ${item.delivery_type}</p>
+                        <p><strong>Place:</strong> ${item.actual_delivery_place}</p>
+                        <p><strong>Date:</strong> ${item.delivery_date}</p>
+
+                        <h4 class="mt-2 font-semibold text-lg text-pink-600">🤱 Mother</h4>
+                        <p><strong>Status:</strong> ${item.mother_status}</p>
+                        ${item.mother_death_date ? `<p><strong>Died on:</strong> ${item.mother_death_date}</p>` : ""}
+                        ${item.cause_of_mother_death ? `<p><strong>Cause of Death:</strong> ${item.cause_of_mother_death}</p>` : ""}
+
+                        <h4 class="mt-2 font-semibold text-lg text-gray-700">👩‍🍼 Patient</h4>
+                        <p><strong>Name:</strong> ${patient.full_name || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${patient.phone_number || 'N/A'}</p>
+                        <p><strong>Husband:</strong> ${patient.husband_name || 'N/A'} (${patient.husband_phone || 'N/A'})</p>
+                        <p><strong>Couple No:</strong> ${patient.couple_no || 'N/A'}</p>
+                    </div>
+                `;
+            });
+        })
+        .catch(error => {
+            container.innerHTML = `<span class="text-danger">❌ Patient not found or error occurred.</span>`;
+            console.error(error);
+        });
+    });
+</script>
+
+
 
 </body>
 
