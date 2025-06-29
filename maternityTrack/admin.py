@@ -39,7 +39,7 @@ class PostOfficeAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'phone_number', 'village', 'blood_group')
+    list_display = ('full_name', 'phone_number', 'village', 'blood_group', 'created_by')
     search_fields = ('full_name', 'phone_number', 'nid_number', 'couple_no')
     list_filter = ('blood_group', 'district', 'upazilla', 'union')
 
@@ -50,12 +50,28 @@ class PregnancyRecordAdmin(admin.ModelAdmin):
     search_fields = ('patient__full_name', 'pregnancy_count')
     readonly_fields = ('created_at', 'updated_at')
 
+# @admin.register(AncSchedule)
+# class AncScheduleAdmin(admin.ModelAdmin):
+#     list_display = ('pregnancy_record', 'anc_date', 'status')
+#     list_filter = ('status', 'anc_date')
+#     search_fields = ('pregnancy_record__patient__full_name',)
+#     readonly_fields = ('created_at', 'updated_at')
+
 @admin.register(AncSchedule)
 class AncScheduleAdmin(admin.ModelAdmin):
-    list_display = ('pregnancy_record', 'anc_date', 'status')
+    list_display = ('pregnancy_record', 'anc_date', 'status', 'get_anc_number')
     list_filter = ('status', 'anc_date')
     search_fields = ('pregnancy_record__patient__full_name',)
     readonly_fields = ('created_at', 'updated_at')
+
+    def get_anc_number(self, obj):
+        # Try to get related CheckupReport's anc_checkup_number if exists
+        checkup_report = getattr(obj, 'checkupreport', None)
+        if checkup_report:
+            return dict(checkup_report.ANC_CHOICES).get(checkup_report.anc_checkup_number, 'Unknown')
+        return 'Not checked'
+
+    get_anc_number.short_description = 'ANC Number'
 
 @admin.register(CheckupReport)
 class CheckupReportAdmin(admin.ModelAdmin):

@@ -27,11 +27,48 @@
 
                 <!-- Start::slide -->
                 <li class="slide has-sub">
-                    <a href="javascript:void(0);" class="side-menu__item">
+                    {% comment %} <a href="javascript:void(0);" class="side-menu__item">
                         <i class="bx bx-home side-menu__icon"></i>
                         <span class="side-menu__label">Dashboards<span class="badge bg-warning-transparent ms-2">12</span></span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
+                        //<i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a> {% endcomment %}
+                    <!-- Field Assistant-->
+                    <div  id="field_assistant" class="d-none">
+                        <a href="/patient_create2/"class="side-menu__item">
+                            
+                            <span class="side-menu__label">Patient Create</span>
+                            
+                        </a>
+
+                        <a href="/field-assistant-dashboard/"class="side-menu__item">
+                            
+                            <span class="side-menu__label">Dashboard</span>
+                            
+                        </a>
+                    </div>
+                    <!-- uhfpo -->
+                    <div id="uhfpo" class="d-none">
+                        <a href="/uhfpo-dashboard/"  class="side-menu__item">
+                            
+                            <span class="side-menu__label">UHFPO dashboard</span>
+                            
+                        </a>
+                    </div>
+                    <div class="d-none" id="midwife">
+                        <a href="/report_create/"  class="side-menu__item">
+                            
+                            <span class="side-menu__label">Checkup Report Create</span>
+                            
+                        </a>
+                        <a href="/ch_and_mother/"  class="side-menu__item">
+                            
+                            <span class="side-menu__label">Delevery Report form</span>
+                            
+                        </a>
+                       
+                    </div>
+
+
                     <ul class="slide-menu child1">
                         {% comment %} <li class="slide side-menu__label1">
                             <a href="javascript:void(0)">Dashboards</a>
@@ -73,8 +110,8 @@
                             <a href="index-11.html" class="side-menu__item">Personal</a>
                         </li> {% endcomment %}
 
-                        <li class="slide">
-                            <a href="/patient_create2/" class="side-menu__item d-none" id="field_assistant">Patient Create</a>
+                        <li class="slide" id="field_assistant">
+                            <a href="/patient_create2/" class="side-menu__item d-none">Patient Create</a>
                         </li>
                         
                         <li class="slide">

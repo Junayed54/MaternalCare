@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const accessToken = localStorage.getItem("access_token");
-
+    const username = document.getElementById("username");
+    const role = document.getElementById("role");
     // Redirect to login if no token found
     if (!accessToken) {
         window.location.href = "/login/";
@@ -24,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .then(data => {
         console.log("User Role:", data.role);
+        username.innerText = `${data.full_name}`;
+        role.innerText = `${data.role}`;
         console.log(data);
         if (data.role === "UHFPO") {
             console.log("heloo");
@@ -36,11 +39,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const field_assistant = document.getElementById('field_assistant');
             if (field_assistant) field_assistant.classList.remove('d-none');
         } else if (data.role === "MIDWIFE") {
-            const midwifeElements = document.querySelectorAll('.midwife');
-            midwifeElements.forEach(el => {
-                el.classList.remove('d-none');
-            });
+            // const midwifeElements = document.querySelectorAll('.midwife');
+            // midwifeElements.forEach(el => {
+            //     el.classList.remove('d-none');
+            // });
 
+
+            const midwife = document.getElementById("midwife");
+            midwife.classList.remove('d-none');
         }
     })
     .catch(error => {

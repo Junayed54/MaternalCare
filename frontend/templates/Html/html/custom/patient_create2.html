@@ -1,6 +1,6 @@
 {% comment %} @SPK@include("partials/mainhead.html") {% endcomment %}
 {% include "../partials/mainhead.html" %}
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> {% endcomment %}
 <style>
     /* Add some basic styling */
     body {
@@ -70,8 +70,8 @@
         {% include "../partials/sidebar.html" %}
         <!-- Start::app-content -->
         <div class="main-content app-content">
-
-            <h2 class="text-center my-4">Safe Motherhood Form</h2>
+            <div class="container my-4 rounded"> 
+            <h2 class="text-center">Safe Motherhood Form</h2>
 
             <form id="patient-form" class="w-75 mx-auto">
                 <div class="row mb-3">
@@ -170,7 +170,7 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">Menstruation Off Duration (Months)</label>
-                            <input id="menstruation-off-duration" type="number" class="form-control">
+                            <input id="menstruation-off-duration" type="number" class="form-control" value="0">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Patient Age</label>
@@ -257,7 +257,7 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">TT Dose Count</label>
-                            <input id="tt-dose-count" type="number" class="form-control">
+                            <input id="tt-dose-count" type="number" class="form-control" value="0">
                         </div>
                         <div class="col-md-8">
                             <label class="form-label">Family Planning After Delivery?</label>
@@ -287,7 +287,7 @@
                     <button id="submit_button" type="submit" class="btn btn-primary mb-3">Submit</button>
                 </div>
             </form>
-
+        </div>
         </div>
         
         <!-- End::app-content -->

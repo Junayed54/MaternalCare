@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import *
 from django.db import models
 
+from decimal import Decimal, InvalidOperation
+
 class DivisionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Division
@@ -49,6 +51,13 @@ class PatientSerializer(serializers.ModelSerializer):
     upazilla_name = serializers.SerializerMethodField()
     union_name = serializers.SerializerMethodField()
     village_name = serializers.SerializerMethodField()
+    husband_earning = serializers.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        required=False, 
+        allow_null=True,
+        coerce_to_string=False  # Keep it numeric in output
+    )
     class Meta:
         model = Patient
         fields = [
@@ -60,6 +69,16 @@ class PatientSerializer(serializers.ModelSerializer):
             'anc_schedules',  # Include ANC schedule field
             'division_name', 'district_name', 'upazilla_name', 'union_name', 'village_name'
         ]
+        
+    def validate_husband_earning(self, value):
+        # Accept integer or decimal, convert to Decimal safely
+        if value is None:
+            return None
+        try:
+            return Decimal(str(value))
+        except (InvalidOperation, ValueError):
+            raise serializers.ValidationError("Please enter a valid number.")
+    
 
     # def get_anc_schedules(self, obj):
     #     # Fetch the latest pregnancy record for this patient
@@ -217,7 +236,36 @@ class DashboardStatsSerializer(serializers.Serializer):
 
 
 class DeliveryRecordSerializer(serializers.ModelSerializer):
-    patient = PatientSerializer()
+    phone_number = serializers.CharField(write_only=True)
+
     class Meta:
         model = DeliveryRecord
-        fields = '__all__'
+        fields = [
+            'id',
+            'created_by',
+            'phone_number',
+            'mother_status',
+            'delivery_date',
+            'baby_name',
+            'baby_gender',
+            'baby_status',
+            'delivery_type',
+            'actual_delivery_place',
+            'mother_death_date',
+            'cause_of_mother_death',
+        ]
+
+    def create(self, validated_data):
+        phone_number = validated_data.pop('phone_number')
+
+        try:
+            patient = Patient.objects.get(phone_number=phone_number)
+        except Patient.DoesNotExist:
+            raise serializers.ValidationError({'phone_number': 'Patient with this phone number does not exist.'})
+
+        delivery_record = DeliveryRecord.objects.create(
+            patient=patient,
+            created_by=self.context['request'].user,
+            **validated_data
+        )
+        return delivery_record

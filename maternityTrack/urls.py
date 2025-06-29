@@ -25,6 +25,8 @@ urlpatterns = [
     path('api/create_patient_and_pregnancy/', CreatePatientAndPregnancy.as_view(), name='create_patient_and_pregnancy'),
     path('api/cre-checkup-report/', CheckupReportCreateView.as_view(), name="create-checkup-report"),
     
+    path('api/delivery-record/create/', CreateDeliveryRecordAPIView.as_view(), name='create_delivery_record'),
+
     
     path('api/show-report/', CheckupReportDetailView.as_view(), name="show-report"),
     
@@ -33,6 +35,10 @@ urlpatterns = [
     path('api/dashboard-stats/', DashboardStatsAPIView.as_view(), name='dashboard-stats'),
 
     path('api/dashboard-data/', DjangoDashboardAPIView.as_view(), name='dashboard_data_api'),
+    
+    
+    path('api/field-assistant/dashboard/', FieldAssistantDashboardAPIView.as_view(), name='field_dashboard'),
+    
     
     path('api/patients/birth-history/', BirthHistoryByPhoneNumberAPIView.as_view(), name='birth-history-by-phone'),
 ]
@@ -43,6 +49,9 @@ urlpatterns += [
     path('patient_create2/', TemplateView.as_view(template_name='Html/html/custom/patient_create2.html'), name='patient-create'),
     path('report_create/', TemplateView.as_view(template_name='Html/html/custom/checkup_reports.html'), name='checkup_report'),
     path('uhfpo-dashboard/', TemplateView.as_view(template_name='Html/html/custom/uhfpo_dashboard.html'), name='uhfpo_dashboard'),
+   
+    path('field-assistant-dashboard/', TemplateView.as_view(template_name='Html/html/custom/fs_dashboard.html'), name='fs_dashboard'),
+    
     path('ch_and_mother/', TemplateView.as_view(template_name='Html/html/custom/childbirth_motherdeath_form.html'), name='child_and_mother'),
     path('show_report/<int:id>/', TemplateView.as_view(template_name='Html/html/custom/checkup_details.html'), name='chekup_details'),
     path('birth_form/', TemplateView.as_view(template_name='Html/html/custom/birth_form.html'), name='birth_form'),

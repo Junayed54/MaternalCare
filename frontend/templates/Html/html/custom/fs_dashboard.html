@@ -1,0 +1,235 @@
+{% comment %} @SPK@include("partials/mainhead.html") {% endcomment %}
+{% include "../partials/mainhead.html" %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    {% comment %} @SPK@include("partials/switcher.html") {% endcomment %}
+    {% include "../partials/switcher.html" %}
+    <div class="page">
+        {% comment %} @SPK@include("partials/header.html") {% endcomment %}
+        {% include "../partials/header.html" %}
+        {% comment %} @SPK@include("partials/sidebar.html") {% endcomment %}
+        {% include "../partials/sidebar.html" %}
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            
+            <div class="container my-4">
+                <h1 class="mb-4">Field Assistant Dashboard</h1>
+
+                <div class="row text-center mb-4">
+                <div class="col-sm-6 mb-3">
+                    <div class="p-3 border rounded bg-light">
+                    <h5>Total Patients</h5>
+                    <h2 id="totalPatients">...</h2>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="p-3 border rounded bg-light">
+                    <h5>Missed ANC Appointments</h5>
+                    <h2 id="missedAncs">...</h2>
+                    </div>
+                </div>
+                <div class="row mb-4" id="ancCompletionCards">
+                <div class="col-sm-6 col-md-3">
+                    <div class="card text-center text-bg-primary p-3">
+                    <h5>1st ANC Completed</h5>
+                    <h2 id="anc1Count">0</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card text-center text-bg-success p-3">
+                    <h5>2nd ANC Completed</h5>
+                    <h2 id="anc2Count">0</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card text-center text-bg-warning p-3">
+                    <h5>3rd ANC Completed</h5>
+                    <h2 id="anc3Count">0</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card text-center text-bg-danger p-3">
+                    <h5>4th ANC Completed</h5>
+                    <h2 id="anc4Count">0</h2>
+                    </div>
+                </div>
+                </div>
+
+                
+                </div>
+
+                <div class="mb-5">
+                <h4 class="mb-3">ANC Completion Chart</h4>
+                <canvas id="ancChart" height="120"></canvas>
+                </div>
+
+                <div>
+                <h4 class="mb-3">Upcoming ANC Schedules This Month</h4>
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Phone</th>
+                        <th>ANC Date</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="upcomingAncsTableBody">
+                    <tr>
+                        <td colspan="4" class="text-center">Loading...</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- End::app-content -->
+
+        {% comment %} @SPK@include("partials/headersearch_modal.html") {% endcomment %}
+        {% include "../partials/headersearch_modal.html" %}
+        {% comment %} @SPK@include("partials/footer.html") {% endcomment %}
+        {% comment %} {% include "../partials/footer.html" %} {% endcomment %}
+    </div>
+
+    {% comment %} @SPK@include("partials/commonjs.html") {% endcomment %}
+    {% include "../partials/commonjs.html" %}
+    {% comment %} @SPK@include("partials/custom_switcherjs.html") {% endcomment %}
+    {% include "../partials/custom_switcherjs.html" %}
+
+
+
+       <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    Swal.fire({
+      icon: "error",
+      title: "Authentication error",
+      text: "Access token not found. Please login.",
+    });
+    return;
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+
+  fetch("/api/field-assistant/dashboard/", { headers })
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Failed to load dashboard data.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      document.getElementById("totalPatients").textContent = data.total_patients;
+      document.getElementById("missedAncs").textContent = data.missed_ancs;
+
+      // Update individual ANC completion counts
+      document.getElementById("anc1Count").textContent = data.anc_chart_data["ANC 1"].completed || 0;
+      document.getElementById("anc2Count").textContent = data.anc_chart_data["ANC 2"].completed || 0;
+      document.getElementById("anc3Count").textContent = data.anc_chart_data["ANC 3"].completed || 0;
+      document.getElementById("anc4Count").textContent = data.anc_chart_data["ANC 4"].completed || 0;
+
+      // Render ANC Chart (Completed vs Missed vs Scheduled)
+      const ctx = document.getElementById("ancChart").getContext("2d");
+
+      const labels = ["ANC 1", "ANC 2", "ANC 3", "ANC 4"];
+      const scheduledData = labels.map(label => data.anc_chart_data[label].scheduled || 0);
+      const completedData = labels.map(label => data.anc_chart_data[label].completed || 0);
+      const missedData = labels.map(label => data.anc_chart_data[label].missed || 0);
+
+      if (window.ancChartInstance) {
+        window.ancChartInstance.destroy();
+      }
+
+      window.ancChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Scheduled",
+              data: scheduledData,
+              backgroundColor: "rgba(255, 206, 86, 0.6)",
+              borderColor: "rgba(255, 206, 86, 1)",
+              borderWidth: 1,
+              borderRadius: 5,
+            },
+            {
+              label: "Completed",
+              data: completedData,
+              backgroundColor: "rgba(75, 192, 192, 0.6)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+              borderRadius: 5,
+            },
+            {
+              label: "Missed",
+              data: missedData,
+              backgroundColor: "rgba(255, 99, 132, 0.6)",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 1,
+              borderRadius: 5,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              precision: 0,
+              title: {
+                display: true,
+                text: 'ANC Count'
+              }
+            },
+          },
+        },
+      });
+
+      // Populate Upcoming ANC Table
+      const tbody = document.getElementById("upcomingAncsTableBody");
+      tbody.innerHTML = "";
+
+      if (data.upcoming_ancs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center">No upcoming ANC schedules this month.</td></tr>`;
+      } else {
+        data.upcoming_ancs.forEach((anc) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${anc.patient_name}</td>
+            <td>${anc.phone}</td>
+            <td>${anc.anc_date}</td>
+            <td>${anc.status}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    })
+    .catch((error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Something went wrong fetching the dashboard data.",
+      });
+    });
+});
+</script>
+
+
+    <script src="../../../static/assets/js/custom.js"></script>
+    {% comment %} <script src="../../../static/Js/dashboard.js"></script> {% endcomment %}
+   
+
+</body>
+</html>

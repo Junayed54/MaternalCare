@@ -311,6 +311,102 @@ def to_date(value):
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         
+# class CreatePatientAndPregnancy(APIView):
+#     permission_classes = [IsAuthenticated, IsFieldAssistant | IsMidwife]
+
+#     def post(self, request, *args, **kwargs):
+#         phone_number = request.data.get('phone_number')
+#         if not phone_number:
+#             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         mutable_data = request.data.copy()
+
+#         # Convert boolean fields
+#         family_planning_value = mutable_data.get("family_planning_after_delivery")
+#         mutable_data["family_planning_after_delivery"] = family_planning_value in ["1", 1, "true", "True"]
+
+#         # Convert integer fields
+#         int_fields = [
+#             "age", "husband_age", "menstruation_off_duration", "womb_count",
+#             "living_children", "normal_delivery_count", "c_section_count",
+#             "d_and_c_count", "tt_dose_count"
+#         ]
+#         for field in int_fields:
+#             mutable_data[field] = to_int(mutable_data.get(field))
+
+#         # Convert date fields
+#         mutable_data["last_period_date"] = to_date(mutable_data.get("last_period_date"))
+#         mutable_data["expected_delivery_date"] = to_date(mutable_data.get("expected_delivery_date"))
+#         mutable_data["date_of_birth"] = to_date(mutable_data.get("date_of_birth"))
+
+#         # Validate all foreign keys before saving
+#         try:
+#             village = Village.objects.get(id=mutable_data.get("village"))
+#             union = Union.objects.get(id=mutable_data.get("union"))
+#             upazila = Upazilla.objects.get(id=mutable_data.get("upazila"))
+#             district = District.objects.get(id=mutable_data.get("district"))
+#             division = Division.objects.get(id=mutable_data.get("division"))
+#         except (Village.DoesNotExist, Union.DoesNotExist, Upazilla.DoesNotExist, District.DoesNotExist, Division.DoesNotExist):
+#             return Response({"error": "Invalid location data provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Prepare patient data dict
+#         patient_data = {
+#             "full_name": mutable_data.get("full_name"),
+#             "phone_number": phone_number,
+#             "date_of_birth": mutable_data.get("date_of_birth"),
+#             "husband_name": mutable_data.get("husband_name"),
+#             "husband_phone": mutable_data.get("husband_phone"),
+#             # "couple_no": mutable_data.get("couple_no"),
+#             "nid_number": mutable_data.get("nid_number"),
+#             "village": village,
+#             "union": union,
+#             "upazilla": upazila,
+#             "district": district,
+#             "division": division,
+#             "blood_group": mutable_data.get("blood_group"),
+#             "husband_blood_group": mutable_data.get("husband_blood_group"),
+#             "husband_earning": mutable_data.get("husband_earning"),
+#             "created_by": request.user,
+#         }
+
+#         # Prepare pregnancy record data
+#         pregnancy_data = {key: mutable_data.get(key) for key in mutable_data if key not in ["phone_number"]}
+        
+#         with transaction.atomic():
+#             # Save patient temporarily in memory and only persist after successful pregnancy record validation
+#             patient = Patient(**patient_data)
+
+#             # Temporarily simulate save (not committed until transaction block ends)
+#             patient.save()
+
+#             # Attach patient to pregnancy data
+#             pregnancy_data["patient"] = patient.id
+
+#             # Validate pregnancy data
+#             serializer = PregnancyRecordSerializer(data=pregnancy_data)
+#             if serializer.is_valid():
+#                 serializer.save()
+#                 return Response({
+#                     "success": True,
+#                     "message": "Patient and pregnancy record created successfully."
+#                 }, status=status.HTTP_201_CREATED)
+#             else:
+#                 print(serializer.errors)
+#                 # Any error => transaction rollback
+#                 raise serializers.ValidationError(serializer.errors) 
+ 
+def to_int(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+def to_date(value):
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return None
+
 class CreatePatientAndPregnancy(APIView):
     permission_classes = [IsAuthenticated, IsFieldAssistant | IsMidwife]
 
@@ -349,52 +445,74 @@ class CreatePatientAndPregnancy(APIView):
         except (Village.DoesNotExist, Union.DoesNotExist, Upazilla.DoesNotExist, District.DoesNotExist, Division.DoesNotExist):
             return Response({"error": "Invalid location data provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Prepare patient data dict
-        patient_data = {
-            "full_name": mutable_data.get("full_name"),
-            "phone_number": phone_number,
-            "date_of_birth": mutable_data.get("date_of_birth"),
-            "husband_name": mutable_data.get("husband_name"),
-            "husband_phone": mutable_data.get("husband_phone"),
-            # "couple_no": mutable_data.get("couple_no"),
-            "nid_number": mutable_data.get("nid_number"),
-            "village": village,
-            "union": union,
-            "upazilla": upazila,
-            "district": district,
-            "division": division,
-            "blood_group": mutable_data.get("blood_group"),
-            "husband_blood_group": mutable_data.get("husband_blood_group"),
-            "husband_earning": mutable_data.get("husband_earning"),
-            "created_by": request.user,
-        }
-
-        # Prepare pregnancy record data
-        pregnancy_data = {key: mutable_data.get(key) for key in mutable_data if key not in ["phone_number"]}
-        
         with transaction.atomic():
-            # Save patient temporarily in memory and only persist after successful pregnancy record validation
-            patient = Patient(**patient_data)
+            patient = Patient.objects.filter(phone_number=phone_number).first()
 
-            # Temporarily simulate save (not committed until transaction block ends)
-            patient.save()
+            if patient:
+                # Update patient's fields if they are provided in request data
+                update_fields = [
+                    "full_name", "date_of_birth", "husband_name", "husband_phone",
+                    "nid_number", "village", "union", "upazilla", "district", "division",
+                    "blood_group", "husband_blood_group", "husband_earning"
+                ]
+                changed = False
+                for field in update_fields:
+                    if field in mutable_data and mutable_data[field] is not None:
+                        new_value = mutable_data[field]
+                        # Handle foreign keys explicitly
+                        if field == "village":
+                            new_value = village
+                        elif field == "union":
+                            new_value = union
+                        elif field == "upazilla":
+                            new_value = upazila
+                        elif field == "district":
+                            new_value = district
+                        elif field == "division":
+                            new_value = division
+                        
+                        if getattr(patient, field) != new_value:
+                            setattr(patient, field, new_value)
+                            changed = True
+                if changed:
+                    patient.save()
+            else:
+                # Create new patient
+                patient_data = {
+                    "full_name": mutable_data.get("full_name"),
+                    "phone_number": phone_number,
+                    "date_of_birth": mutable_data.get("date_of_birth"),
+                    "husband_name": mutable_data.get("husband_name"),
+                    "husband_phone": mutable_data.get("husband_phone"),
+                    "nid_number": mutable_data.get("nid_number"),
+                    "village": village,
+                    "union": union,
+                    "upazilla": upazila,
+                    "district": district,
+                    "division": division,
+                    "blood_group": mutable_data.get("blood_group"),
+                    "husband_blood_group": mutable_data.get("husband_blood_group"),
+                    "husband_earning": mutable_data.get("husband_earning"),
+                    "created_by": request.user,
+                }
+                patient = Patient.objects.create(**patient_data)
 
-            # Attach patient to pregnancy data
+            # Prepare pregnancy record data
+            pregnancy_data = {key: mutable_data.get(key) for key in mutable_data if key != "phone_number"}
             pregnancy_data["patient"] = patient.id
 
-            # Validate pregnancy data
             serializer = PregnancyRecordSerializer(data=pregnancy_data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
                     "success": True,
-                    "message": "Patient and pregnancy record created successfully."
+                    "message": "Patient and pregnancy record processed successfully.",
+                    "patient_id": patient.id,
                 }, status=status.HTTP_201_CREATED)
             else:
                 print(serializer.errors)
-                # Any error => transaction rollback
-                raise serializers.ValidationError(serializer.errors) 
- 
+                raise serializers.ValidationError(serializer.errors)
+
 
 class CheckupReportCreateView(generics.CreateAPIView):
     queryset = CheckupReport.objects.all()
@@ -438,7 +556,20 @@ class CheckupReportDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(report)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    
+
+class CreateDeliveryRecordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = DeliveryRecordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        else:
+            print(serializer.errors)
+        
+        return Response(serializer.errors, status=400)
+
     
     
 # class PregnancyDeliveryStatisticsAPIView(APIView):
@@ -987,3 +1118,143 @@ class BirthHistoryByPhoneNumberAPIView(APIView):
 
         except Patient.DoesNotExist:
             return Response({"error": "Patient with this phone number does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        
+    
+
+
+# class FieldAssistantDashboardAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         user = request.user
+
+#         total_patients = Patient.objects.filter(created_by=user).count()
+
+#         # Count completed ANCs by anc_checkup_number, but only where AncSchedule.status='Completed'
+#         anc_completed_counts = (
+#             CheckupReport.objects.filter(
+#                 patient__created_by=user,
+#                 anc__status='Completed',
+#             )
+#             .values('anc_checkup_number')
+#             .annotate(completed_count=Count('id'))
+#         )
+
+#         # Prepare dictionary with default 0
+#         anc_chart_data = {
+#             'ANC 1': 0,
+#             'ANC 2': 0,
+#             'ANC 3': 0,
+#             'ANC 4': 0,
+#         }
+
+#         for item in anc_completed_counts:
+#             anc_num = item['anc_checkup_number']
+#             if anc_num:
+#                 anc_label = f"ANC {anc_num}"
+#                 if anc_label in anc_chart_data:
+#                     anc_chart_data[anc_label] = item['completed_count']
+
+#         # This month’s upcoming ANCs (still same)
+#         from django.utils.timezone import now
+#         from datetime import timedelta
+
+#         today = now().date()
+#         start_of_month = today.replace(day=1)
+#         end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+
+#         upcoming_ancs = AncSchedule.objects.filter(
+#             pregnancy_record__patient__created_by=user,
+#             anc_date__range=(start_of_month, end_of_month)
+#         ).select_related('pregnancy_record__patient').order_by('anc_date')
+
+#         upcoming_list = []
+#         for anc in upcoming_ancs:
+#             patient = anc.pregnancy_record.patient
+#             upcoming_list.append({
+#                 'patient_name': patient.full_name,
+#                 'phone': patient.phone_number,  # Make sure to use correct field here
+#                 'anc_number': None,  # AncSchedule doesn't have anc_number, but CheckupReport does
+#                 'anc_date': anc.anc_date,
+#                 'status': anc.status,
+#             })
+
+#         # Missed ANCs (status Scheduled or Missed and date < today)
+#         missed_ancs = AncSchedule.objects.filter(
+#             pregnancy_record__patient__created_by=user,
+#             anc_date__lt=today,
+#             status__in=['Scheduled', 'Missed']
+#         ).count()
+
+#         return Response({
+#             'total_patients': total_patients,
+#             'anc_chart_data': anc_chart_data,
+#             'upcoming_ancs': upcoming_list,
+#             'missed_ancs': missed_ancs
+#         })
+
+
+
+class FieldAssistantDashboardAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        today = now().date()
+        start_of_month = today.replace(day=1)
+        end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+
+        total_patients = Patient.objects.filter(created_by=user).count()
+
+        # Initialize chart structure
+        anc_chart_data = {
+            'ANC 1': {'scheduled': 0, 'completed': 0, 'missed': 0},
+            'ANC 2': {'scheduled': 0, 'completed': 0, 'missed': 0},
+            'ANC 3': {'scheduled': 0, 'completed': 0, 'missed': 0},
+            'ANC 4': {'scheduled': 0, 'completed': 0, 'missed': 0},
+        }
+
+        # Fetch all ANCs related to user
+        anc_schedules = AncSchedule.objects.filter(
+            pregnancy_record__patient__created_by=user
+        )
+
+        # Loop and count by status and anc_number
+        for anc in anc_schedules:
+            label = f"ANC {anc.anc_number}"
+            if label in anc_chart_data:
+                if anc.status == 'Scheduled':
+                    anc_chart_data[label]['scheduled'] += 1
+                elif anc.status == 'Completed':
+                    anc_chart_data[label]['completed'] += 1
+                elif anc.status == 'Missed':
+                    anc_chart_data[label]['missed'] += 1
+
+        # Upcoming ANCs this month
+        upcoming_ancs = anc_schedules.filter(
+            anc_date__range=(start_of_month, end_of_month)
+        ).select_related('pregnancy_record__patient').order_by('anc_date')
+
+        upcoming_list = []
+        for anc in upcoming_ancs:
+            patient = anc.pregnancy_record.patient
+            upcoming_list.append({
+                'patient_name': patient.full_name,
+                'phone': patient.phone_number,
+                'anc_number': anc.anc_number,
+                'anc_date': anc.anc_date,
+                'status': anc.status,
+            })
+
+        # Missed ANCs (before today)
+        missed_ancs = anc_schedules.filter(
+            anc_date__lt=today,
+            status__in=['Scheduled', 'Missed']
+        ).count()
+
+        return Response({
+            'total_patients': total_patients,
+            'anc_chart_data': anc_chart_data,
+            'upcoming_ancs': upcoming_list,
+            'missed_ancs': missed_ancs
+        })

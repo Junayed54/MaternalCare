@@ -38,25 +38,25 @@
                 <input type="hidden" id="patient_id">
 
                 <label for="delivery_date" class="form-label">Delivery Date</label>
-                <input type="date" id="delivery_date" class="form-control" required>
+                <input type="date" name="delivery_date" id="delivery_date" class="form-control" required>
 
                 <label for="mother_status" class="form-label">Mother's Status</label>
-                <select id="mother_status" class="form-select" required>
+                <select name="mother_status" id="mother_status" class="form-select" required>
                     <option value="Alive">Alive</option>
                     <option value="Deceased">Deceased</option>
                 </select>
 
                 <div id="death-details" style="display: none;">
                     <label for="mother_death_date" class="form-label">Mother's Death Date</label>
-                    <input type="date" id="mother_death_date" class="form-control">
+                    <input type="date" name="mother_death_date" id="mother_death_date" class="form-control">
 
                     <label for="cause_of_mother_death" class="form-label">Cause of Death</label>
-                    <textarea id="cause_of_mother_death" class="form-control"></textarea>
+                    <textarea name="cause_of_mother_death" id="cause_of_mother_death" class="form-control"></textarea>
                 </div>
 
                 <!-- ✅ NEW FIELD: Delivery Type -->
                 <label for="delivery_type" class="form-label">Delivery Type</label>
-                <select id="delivery_type" class="form-select" required>
+                <select id="delivery_type" name="delivery_type" class="form-select" required>
                     <option value="">Select Type</option>
                     <option value="Normal">Normal</option>
                     <option value="Cesarean">Cesarean</option>
@@ -65,7 +65,7 @@
 
                 <!-- ✅ NEW FIELD: Actual Delivery Place -->
                 <label for="actual_delivery_place" class="form-label">Actual Delivery Place</label>
-                <select id="actual_delivery_place" class="form-select" required>
+                <select name="actual_delivery_place" id="actual_delivery_place" class="form-select" required>
                     <option value="">Select Place</option>
                     <option value="Hospital">Hospital</option>
                     <option value="Clinic">Clinic</option>
@@ -76,23 +76,23 @@
                 <h5 class="text-secondary mt-3">Baby Information</h5>
 
                 <label for="baby_name" class="form-label">Baby Name</label>
-                <input type="text" id="baby_name" class="form-control">
+                <input type="text" name="baby_name" id="baby_name" class="form-control">
 
                 <label for="baby_gender" class="form-label">Baby Gender</label>
-                <select id="baby_gender" class="form-select">
+                <select name="baby_gender" id="baby_gender" class="form-select">
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
 
                 <label for="baby_status" class="form-label">Baby's Status</label>
-                <select id="baby_status" class="form-select" required>
+                <select id="baby_status" name="baby_status" class="form-select" required>
                     <option value="Alive">Alive</option>
                     <option value="Deceased">Deceased</option>
                     <option value="Stillborn">Stillborn</option>
                 </select>
 
-                <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
+                <button type="submit" id="submitDelivery" class="btn btn-primary w-100 mt-3">Submit</button>
             </form>
 
                 
@@ -136,9 +136,9 @@
     <script src="../../../static/assets/js/custom.js"></script>
 
     <!-- My js files -->
-    <script src="../../../static/Js/checkup_reports.js"></script>
+    <script src="../../../static/Js/birth_form.js"></script>
 
-    <script>
+    {% comment %} <script>
         // Show/hide death details based on mother's status
         document.getElementById("mother_status").addEventListener("change", function () {
             document.getElementById("death-details").style.display = this.value === "Deceased" ? "block" : "none";
@@ -188,7 +188,7 @@
 
         // Optionally add form submit logic here
 
-    </script>
+    </script> {% endcomment %}
 
     <script>
     document.getElementById("checkHistoryBtn").addEventListener("click", function () {

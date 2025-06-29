@@ -2,6 +2,8 @@ from django.db import models
 from hospital.models import Hospital
 from django.contrib.auth import get_user_model
 from datetime import timedelta
+from django.utils.timezone import now
+
 User = get_user_model()
 
 class Division(models.Model):
@@ -144,19 +146,36 @@ class PregnancyRecord(models.Model):
     def create_anc_schedules(self):
         """ Generate 4 ANC schedules spread across 10 months. """
         schedule_intervals = [75, 150, 225, 300]  # ANC schedule in days
-        for days in schedule_intervals:
+        for index, days in enumerate(schedule_intervals, start=1):  # index = 1,2,3,4
             AncSchedule.objects.create(
                 pregnancy_record=self,
                 anc_date=self.last_period_date + timedelta(days=days),
-                status="Scheduled"
+                status="Scheduled",
+                anc_number=index  # assign ANC number here
             )
 
     def __str__(self):
         return f"{self.patient.full_name} (Pregnancy {self.pregnancy_count})"
 
+class AncScheduleManager(models.Manager):
+    def get_queryset(self):
+        # Use the base manager to avoid recursion
+        AncSchedule._base_manager.filter(
+            status='Scheduled',
+            anc_date__lt=now().date()
+        ).update(status='Missed')
+
+        return super().get_queryset()
 
 
 class AncSchedule(models.Model):
+    ANC_CHOICES = [
+        (1, '1st ANC'),
+        (2, '2nd ANC'),
+        (3, '3rd ANC'),
+        (4, '4th ANC'),
+    ]
+
     pregnancy_record = models.ForeignKey(PregnancyRecord, on_delete=models.CASCADE)  # Updated field name
     anc_date = models.DateField()  # Scheduled ANC date
     status = models.CharField(max_length=50, choices=[
@@ -164,10 +183,12 @@ class AncSchedule(models.Model):
         ('Completed', 'Completed'), 
         ('Missed', 'Missed')
     ])
+    anc_number = models.PositiveSmallIntegerField(choices=ANC_CHOICES, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = AncScheduleManager()  
 
     
     def __str__(self):
