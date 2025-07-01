@@ -395,6 +395,10 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Error:", error));
         });
+
+        
+
+
     }
 
     // Form submission logic
@@ -405,9 +409,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const patientImage = document.querySelector('input[type="file"]');
 
             if (!accessToken) {
-                alert('Unauthorized: Please log in again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Unauthorized',
+                    text: 'Please log in again.',
+                    confirmButtonText: 'OK',
+                });
                 return;
             }
+
 
             if (patientImage.files.length > 0) {
                 formData.append('image', patientImage.files[0]);
@@ -429,7 +439,13 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('division', document.getElementById('division').value);
             formData.append('blood_group', document.getElementById('blood-group').value);
             formData.append('husband_blood_group', document.getElementById('husband-blood-group').value);
-            formData.append('husband_earning', document.getElementById('husband-earning').value);
+            const husbandEarningInput = document.getElementById('husband-earning').value.trim();
+            if (husbandEarningInput === "" || isNaN(husbandEarningInput)) {
+                formData.append('husband_earning', 0.00);  // Send null if empty or invalid
+            } else {
+                formData.append('husband_earning', parseFloat(husbandEarningInput));
+            }
+
 
             // Pregnancy record fields
             formData.append('age', document.getElementById('age').value);
@@ -470,10 +486,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         window.location.reload();
                     });
                 } else {
+                    let errorMessages = "";
+                    for (let field in data.errors) {
+                        errorMessages += `${field}: ${data.errors[field].join(", ")}\n`;
+                    }
+
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Error submitting form. Please try again.',
+                        title: 'Validation Error',
+                        text: errorMessages,
                         confirmButtonColor: '#d33'
                     });
                 }
@@ -481,8 +502,14 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Something went wrong. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong. Please try again.',
+                    confirmButtonText: 'OK',
+                });
             });
+
         });
     }
 

@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.exists) {
                 Swal.fire("✅ Success", "Patient found.", "success");
                 patientIdInput.value = data.patient_id;
+                
                 deliveryForm.style.display = "block";
             } else {
                 Swal.fire("⚠️ Not Found", "Patient not found.", "warning");

@@ -55,8 +55,53 @@
     .error-message {
         color: red;
     }
+
+
+    
+
 </style>
 
+
+<style>
+    .form-control-custom {
+        height: 30px; /* Small height */
+        border: 2px dotted #ced4da; /* Dotted border */
+        padding: .375rem .75rem; /* Adjust padding to fit new height */
+        transition: all 0.2s ease-in-out; /* Smooth transition for focus effect */
+    }
+
+    .form-control-custom:focus {
+        border-color: #007bff; /* Bootstrap primary color for solid border */
+        border-style: solid; /* Solid border on focus */
+        box-shadow: 0 0 0 0.050rem rgba(0, 123, 255, 0.25); /* Optional: Bootstrap-like focus shadow */
+       
+    }
+
+    /* For select elements, as they often render differently */
+    .form-select-custom {
+        height: 30px; /* Small height */
+        border: 1px dotted #ced4da; /* Dotted border */
+        padding: .375rem 2.25rem .375rem .75rem; /* Adjust padding for select with arrow */
+        transition: all 0.2s ease-in-out;
+    }
+
+    .form-select-custom:focus {
+        border-color: #007bff;
+        border-style: solid;
+        box-shadow: 0 0 0 0.05rem rgba(0, 123, 255, 0.25);
+        
+    }
+</style>
+<style>
+  .btn-gradient {
+    background: linear-gradient(to right, #0d6efd, #6610f2);
+    color: white;
+    border: none;
+  }
+  .btn-gradient:hover {
+    background: linear-gradient(to right, #6610f2, #0d6efd);
+  }
+</style>
 </head>
 
 <body>
@@ -70,224 +115,244 @@
         {% include "../partials/sidebar.html" %}
         <!-- Start::app-content -->
         <div class="main-content app-content">
-            <div class="container my-4 rounded"> 
-            <h2 class="text-center">Safe Motherhood Form</h2>
+            
+            <h4 class="text-center my-5 text-secondary fw-semibold">
+                <i class="bi bi-heart-pulse-fill me-2"></i>Safe Motherhood Form
+            </h4>
+
 
             <form id="patient-form" class="w-75 mx-auto">
+  
+            <!-- Basic Info Section -->
+            <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                <h4 class="mb-3 text-primary fw-bold">Basic Information</h4>
                 <div class="row mb-3">
-                    <div class="col-md-6">
+                <div class="col-md-6">
                     <label class="form-label">Phone Number</label>
                     <input
-                        type="tel"                            id="phone-number"
-                        class="form-control"
-                        required
-                        pattern="[0-9]{10,15}"                 title="Please enter a valid phone number (digits only, 10-15 characters)"
+                    type="tel"
+                    id="phone-number"
+                    class="form-control form-control-custom"
+                    required
+                    pattern="[0-9]{10,15}"
+                    title="Please enter a valid phone number (digits only, 10-15 characters)"
                     >
                 </div>
+                <div class="col-md-6">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="full-name" class="form-control form-control-custom" required disabled>
+                </div>
+                </div>
+            </div>
+
+            <button type="button" id="next_button" class="btn btn-gradient mb-3">Next</button>
+
+            <div id="patient-info" class="d-none">
+
+                <!-- Patient Image -->
+                <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                <h4 class="mb-3 text-primary fw-bold">Patient Image</h4>
+                <div class="mb-3">
+                    <label class="form-label">Upload Patient's Image</label>
+                    <input type="file" class="form-control form-control-custom" accept="image/png, image/jpeg, image/jpg">
+                </div>
+                </div>
+
+                <!-- Spouse Info Section -->
+                <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                <h4 class="mb-3 text-primary fw-bold">Spouse Information</h4>
+                <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" id="full-name" class="form-control" required disabled>
+                    <label class="form-label">Husband's Name</label>
+                    <input id="husband-name" type="text" class="form-control form-control-custom">
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Husband's Phone Number</label>
+                    <input id="husband-phone" type="text" class="form-control form-control-custom">
+                    </div>
+                </div>
+                </div>
+
+                <!-- Personal Info Section -->
+                <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                <h4 class="mb-3 text-primary fw-bold">Personal Information</h4>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">National ID Number</label>
+                    <input id="nid-number" type="text" class="form-control form-control-custom">
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Date of Birth</label>
+                    <input id="date-of-birth" type="date" class="form-control form-control-custom">
+                    </div>
+                </div>
+                </div>
+
+                <!-- Address Section -->
+                <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                <h4 class="mb-3 text-primary fw-bold">Address</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                    <label class="form-label">Division</label>
+                    <select id="division" class="form-select form-select-custom">
+                        <option value="">Select Division</option>
+                    </select>
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">District</label>
+                    <select id="district" class="form-select form-select-custom">
+                        <option value="">Select District</option>
+                    </select>
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Upazila</label>
+                    <select id="upazila" class="form-select form-select-custom">
+                        <option value="">Select Upazila</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">Union</label>
+                    <select id="union" class="form-select form-select-custom">
+                        <option value="">Select Union</option>
+                    </select>
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Village</label>
+                    <select id="village" class="form-select form-select-custom">
+                        <option value="">Select Village</option>
+                    </select>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Pregnancy Details Section -->
+                <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                <h4 class="mb-3 text-primary fw-bold">Pregnancy Details</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                    <label class="form-label">Menstruation Off Duration (Months)</label>
+                    <input id="menstruation-off-duration" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Patient Age</label>
+                    <input id="age" type="number" class="form-control form-control-custom">
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Husband's Age</label>
+                    <input id="husband-age" type="number" class="form-control form-control-custom">
                     </div>
                 </div>
 
-                <button type="button" id="next_button" class="btn btn-primary mb-3">Next</button>
-
-                <div id="patient-info" class="d-none">
-                    <div class="mb-3">
-                        <label class="form-label">Upload Patient's Image</label>
-                        <input type="file" class="form-control" accept="image/png, image/jpeg, image/jpg">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                    <label class="form-label">Blood Group</label>
+                    <select id="blood-group" class="form-select form-select-custom">
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                    </select>
                     </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Husband's Name</label>
-                            <input id="husband-name" type="text" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Husband's Phone Number</label>
-                            <input id = "husband-phone" type="text" class="form-control">
-                        </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Husband's Blood Group</label>
+                    <select id="husband-blood-group" class="form-select form-select-custom">
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                    </select>
                     </div>
-
-                    <div class="row mb-3">
-                        {% comment %} <div class="col-md-6">
-                            <label class="form-label">Couple No</label>
-                            <input id="couple-no" type="text" class="form-control">
-                        </div> {% endcomment %}
-                        <div class="col-md-6">
-                            <label class="form-label">National ID Number</label>
-                            <input id="nid-number" type="text" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Date of Birth</label>
-                            <input id="date-of-birth" type="date" class="form-control">
-                        </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Womb Count</label>
+                    <input id="womb-count" type="number" class="form-control form-control-custom" value="0">
                     </div>
-
-                    <!-- Address Section -->
-                    <h4 class="mt-4">Address</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Division</label>
-                            <select id="division" class="form-select">
-                                <option value="">Select Division</option>
-                                
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">District</label>
-                            <select id="district" class="form-select">
-                                <option value="">Select District</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Upazila</label>
-                            <select id="upazila" class="form-select">
-                                <option value="">Select Upazila</option>
-                            </select>
-                        </div>
-                        
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Union</label>
-                            <select id="union" class="form-select">
-                                <option value="">Select Union</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Village</label>
-                            <select id="village" class="form-select">
-                                <option value="">Select Village</option>
-                            </select>
-                        </div>
-                        
-                    </div>
-
-                    <!-- Pregnancy Details -->
-                    <h4 class="mt-4">Pregnancy Details</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Menstruation Off Duration (Months)</label>
-                            <input id="menstruation-off-duration" type="number" class="form-control" value="0">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Patient Age</label>
-                            <input id="age" type="number" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Husband's Age</label>
-                            <input id="husband-age" type="number" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Blood Group</label>
-                            <select id="blood-group" class="form-select">
-                                <option>A+</option>
-                                <option>A-</option>
-                                <option>B+</option>
-                                <option>B-</option>
-                                <option>O+</option>
-                                <option>O-</option>
-                                <option>AB+</option>
-                                <option>AB-</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Husband's Blood Group</label>
-                            <select id="husband-blood-group" class="form-select">
-                                <option>A+</option>
-                                <option>A-</option>
-                                <option>B+</option>
-                                <option>B-</option>
-                                <option>O+</option>
-                                <option>O-</option>
-                                <option>AB+</option>
-                                <option>AB-</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Womb Count</label>
-                            <input id="womb-count" type="number" class="form-control" value="0">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Living Children</label>
-                            <input id="living-children" type="number" class="form-control" value="0">
-                        </div>
-                        <div class="col-md-4">
-                            <label  class="form-label">Last Child's Age</label>
-                            <input id="last-child-age" type="number" class="form-control" value="0">
-                        </div>
-                        <div class="col-md-4">
-                            <label  class="form-label">Normal Delivery Count</label>
-                            <input id="normal-delivery-count" type="number" class="form-control" value="0">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">C-Section Count</label>
-                            <input id ="c-section-count" type="number" class="form-control" value="0">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">D&C Count</label>
-                            <input id="d-and-c-count" type="number" class="form-control" value="0">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Husband's Income (Monthly)</label>
-                            <input id="husband-earning" type="text" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Preferred Delivery Place</label>
-                        <select id="preferred-delivery-place" class="form-select">
-                            <option>Hospital</option>
-                            <option>Clinic</option>
-                            <option>Home</option>
-                        </select>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">TT Dose Count</label>
-                            <input id="tt-dose-count" type="number" class="form-control" value="0">
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label">Family Planning After Delivery?</label>
-                            <select id="family-planning-after-delivery" class="form-select">
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Any Physical Problems?</label>
-                        <textarea id="physical-problem" class="form-control" rows="3"></textarea>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Last Menstrual Period (LMP)</label>
-                            <input id="last-period-date" type="date" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Expected Delivery Date (EDD)</label>
-                            <input id="expected-delivery-date" type="date" class="form-control">
-                        </div>
-                    </div>
-
-                    <button id="submit_button" type="submit" class="btn btn-primary mb-3">Submit</button>
                 </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                    <label class="form-label">Living Children</label>
+                    <input id="living-children" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Last Child's Age</label>
+                    <input id="last-child-age" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Normal Delivery Count</label>
+                    <input id="normal-delivery-count" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                    <label class="form-label">C-Section Count</label>
+                    <input id ="c-section-count" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">D&C Count</label>
+                    <input id="d-and-c-count" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                    <div class="col-md-4">
+                    <label class="form-label">Husband's Income (Monthly)</label>
+                    <input id="husband-earning" type="number" step="0.01" class="form-control form-control-custom" placeholder="Enter monthly income" value="0.00">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Preferred Delivery Place</label>
+                    <select id="preferred-delivery-place" class="form-select form-select-custom">
+                    <option>Hospital</option>
+                    <option>Clinic</option>
+                    <option>Home</option>
+                    </select>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                    <label class="form-label">TT Dose Count</label>
+                    <input id="tt-dose-count" type="number" class="form-control form-control-custom" value="0">
+                    </div>
+                    <div class="col-md-8">
+                    <label class="form-label">Family Planning After Delivery?</label>
+                    <select id="family-planning-after-delivery" class="form-select form-select-custom">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Any Physical Problems?</label>
+                    <textarea id="physical-problem" class="form-control form-control-custom" rows="3"></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">Last Menstrual Period (LMP)</label>
+                    <input id="last-period-date" type="date" class="form-control form-control-custom">
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Expected Delivery Date (EDD)</label>
+                    <input id="expected-delivery-date" type="date" class="form-control form-control-custom">
+                    </div>
+                </div>
+                </div>
+
+                <button id="submit_button" type="submit" class="btn btn-gradient mb-3">Submit</button>
+            </div>
             </form>
-        </div>
+
+        
         </div>
         
         <!-- End::app-content -->

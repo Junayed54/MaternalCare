@@ -412,11 +412,12 @@ class CreatePatientAndPregnancy(APIView):
 
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
+        print(request.data)
         if not phone_number:
             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         mutable_data = request.data.copy()
-
+       
         # Convert boolean fields
         family_planning_value = mutable_data.get("family_planning_after_delivery")
         mutable_data["family_planning_after_delivery"] = family_planning_value in ["1", 1, "true", "True"]
@@ -429,7 +430,7 @@ class CreatePatientAndPregnancy(APIView):
         ]
         for field in int_fields:
             mutable_data[field] = to_int(mutable_data.get(field))
-
+        
         # Convert date fields
         mutable_data["last_period_date"] = to_date(mutable_data.get("last_period_date"))
         mutable_data["expected_delivery_date"] = to_date(mutable_data.get("expected_delivery_date"))
@@ -477,6 +478,7 @@ class CreatePatientAndPregnancy(APIView):
                 if changed:
                     patient.save()
             else:
+                
                 # Create new patient
                 patient_data = {
                     "full_name": mutable_data.get("full_name"),
@@ -497,6 +499,7 @@ class CreatePatientAndPregnancy(APIView):
                 }
                 patient = Patient.objects.create(**patient_data)
 
+            print(patient)
             # Prepare pregnancy record data
             pregnancy_data = {key: mutable_data.get(key) for key in mutable_data if key != "phone_number"}
             pregnancy_data["patient"] = patient.id
@@ -511,7 +514,12 @@ class CreatePatientAndPregnancy(APIView):
                 }, status=status.HTTP_201_CREATED)
             else:
                 print(serializer.errors)
-                raise serializers.ValidationError(serializer.errors)
+                return Response({
+                    "success": False,
+                    "message": "Validation error.",
+                    "errors": serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CheckupReportCreateView(generics.CreateAPIView):
@@ -543,13 +551,18 @@ class CheckupReportDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsMidwife]
 
     def post(self, request, *args, **kwargs):
+        
         anc_id= request.data.get("id")  # Get ID from the request body
+        
         if not anc_id:
             return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             anc = AncSchedule.objects.get(id=anc_id)
+            
             report = CheckupReport.objects.get(anc=anc)
+            
+            
         except CheckupReport.DoesNotExist:
             return Response({"error": "Checkup report not found"}, status=status.HTTP_404_NOT_FOUND)
 

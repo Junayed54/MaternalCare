@@ -116,15 +116,15 @@ class PregnancyRecord(models.Model):
     menstruation_off_duration = models.IntegerField(help_text="How long is menstruation off (in months)")
     
     womb_count = models.IntegerField(help_text="How many wombs")
-    living_children = models.IntegerField(help_text="Number of living children")
+    living_children = models.IntegerField(help_text="Number of living children", default=0)
     last_child_age = models.IntegerField(null=True, blank=True, help_text="Last child's age")
     
-    normal_delivery_count = models.IntegerField(help_text="Previous normal deliveries")
-    c_section_count = models.IntegerField(help_text="Previous C-sections")
-    d_and_c_count = models.IntegerField(help_text="Previous D&C/MRI procedures")
+    normal_delivery_count = models.IntegerField(help_text="Previous normal deliveries", default=0)
+    c_section_count = models.IntegerField(help_text="Previous C-sections", default=0)
+    d_and_c_count = models.IntegerField(help_text="Previous D&C/MRI procedures", default=0)
     
     preferred_delivery_place = models.CharField(max_length=20, choices=DELIVERY_CHOICES)
-    tt_dose_count = models.IntegerField(help_text="How many TT doses taken")
+    tt_dose_count = models.IntegerField(help_text="How many TT doses taken", default=0)
     
     family_planning_after_delivery = models.BooleanField(default=False, help_text="Willing to take family planning after delivery?")
     physical_problem = models.TextField(null=True, blank=True, help_text="Any physical problems?")
