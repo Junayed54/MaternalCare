@@ -118,15 +118,15 @@
             </div>
 
             <!-- Upcoming ANC Schedules -->
-            <div class="card">
+            <div class="card my-5">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="mb-0 fw-bold text-primary d-flex align-items-center">
                     <i class="fe fe-calendar me-2"></i> Upcoming ANC Schedules This Month
                 </h5>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover mb-0 text-nowrap">
+                    <table class="table table-bordered table-hover mb-0 text-nowrap p-4">
                         <thead class="table-dark">
                             <tr>
                                 <th>Patient Name</th>
@@ -146,14 +146,14 @@
         </div>
 
         </div>
-
+        {% comment %} <div style="height: 100vh"></div> {% endcomment %}
         
         <!-- End::app-content -->
 
         {% comment %} @SPK@include("partials/headersearch_modal.html") {% endcomment %}
         {% include "../partials/headersearch_modal.html" %}
         {% comment %} @SPK@include("partials/footer.html") {% endcomment %}
-        {% comment %} {% include "../partials/footer.html" %} {% endcomment %}
+        {% include "../partials/footer.html" %}
       </div>
 
     {% comment %} @SPK@include("partials/commonjs.html") {% endcomment %}
