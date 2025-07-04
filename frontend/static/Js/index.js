@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const username = document.getElementById("username");
     const role = document.getElementById("role");
     // Redirect to login if no token found
-    if (!accessToken) {
-        window.location.href = "/login/";
-        return; // stop further execution
-    }
+    // if (!accessToken) {
+    //     window.location.href = "/login/";
+    //     return; // stop further execution
+    // }
 
     // Fetch user role
     fetch("/api/user/role/", {
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => {
         console.error("Error fetching user role:", error);
         // Redirect to login on failure
-        window.location.href = "/login/";
+        // window.location.href = "/login/";
     });
 
     // Logout button event
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
         logoutBtn.addEventListener("click", function () {
             localStorage.removeItem("access_token");
             localStorage.removeItem("refresh_token");
-            window.location.href = "/login/";
+            // window.location.href = "/login/";
         });
     }
 });
