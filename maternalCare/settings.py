@@ -84,23 +84,23 @@ WSGI_APPLICATION = 'maternalCare.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'UpMedical',
-        'USER': 'root',
-        'PASSWORD': 'Bridgers@123',
-        'HOST': 'localhost',  # For local MySQL, use 'localhost'
-        'PORT': '3306',  # Default MySQL port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'UpMedical',
+#         'USER': 'root',
+#         'PASSWORD': 'Bridgers@123',
+#         'HOST': 'localhost',  # For local MySQL, use 'localhost'
+#         'PORT': '3306',  # Default MySQL port
+#     }
+# }
 
 
 

@@ -9,7 +9,7 @@
 <style>
   .hero-section {
         height: 100vh; /* Full viewport height */
-        background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.65)),
+        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)),
                     url('../../../static/assets/images/custom/hero.png') center/cover no-repeat;
         color: #f9f9f9;
         padding: 100px 20px;
@@ -17,7 +17,7 @@
         border-radius: 8px;
 
         display: flex;
-        align-items: center;
+        
         justify-content: center;
         text-align: center;
     }
@@ -34,7 +34,8 @@
   }
 
   .lead {
-    color: #444;
+    color: #EBD6FB;
+    font-size: 20px;
   }
 
   .hero-section h1 {
@@ -69,11 +70,11 @@
         <div class="main-content app-content">
             <div class="container-fluid">
                 <!-- Hero Section -->
-<section class="hero-section text-center d-flex align-items-center justify-content-center mt-4">
+<section class="hero-section text-center d-flex  justify-content-center">
   <div class="container mt-4">
     <h1 class="fw-bold">Safe Motherhood Starts Here</h1>
     <p class="lead mt-3">Empowering field assistants to care for every pregnant mother — village to village, home to home.</p>
-    <a href="#" class="btn btn-primary btn-lg mt-4">Register New Patient</a>
+    {% comment %} <a href="#" class="btn btn-primary btn-lg mt-4">Register New Patient</a> {% endcomment %}
   </div>
 </section>
 
